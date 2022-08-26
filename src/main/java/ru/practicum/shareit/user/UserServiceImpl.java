@@ -25,9 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> createUser(UserDto userDto) throws ValidationException {
-        if (validateUserDto(userDto) && validateEmail(userDto)) {
-            return Optional.ofNullable(repository.create(UserMapper.toUser(userDto)));
-        } else return Optional.empty();
+        return Optional.ofNullable(repository.create(UserMapper.toUser(userDto)));
     }
 
     @Override
@@ -40,30 +38,11 @@ public class UserServiceImpl implements UserService {
         User user;
         user = UserMapper.toUser(userDto);
         user.setId(userId);
-        if (userDto.getEmail() != null) {
-            if (!validateEmail(userDto)) {
-                return Optional.empty();
-            }
-        }
         return repository.update(user);
     }
 
     @Override
     public boolean deleteUserById(long id) {
         return repository.deleteUserById(id);
-    }
-
-    private boolean validateUserDto(UserDto userDto) {
-        if (userDto.getName() == null || userDto.getName().isBlank()
-                || userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            return false;
-        } else return true;
-    }
-
-    private boolean validateEmail(UserDto userDto) {
-        if (!(userDto.getEmail().contains("@"))
-        ) {
-            return false;
-        } else return true;
     }
 }

@@ -29,6 +29,7 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) throws ValidationException {
         return userService.createUser(userDto).map(newUser -> new ResponseEntity<>(newUser, HttpStatus.CREATED))
@@ -48,8 +49,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@Valid @RequestBody UserDto userDto,
-                                            @PathVariable long userId) throws ValidationException {
+    public ResponseEntity<User> updateUser(@RequestBody UserDto userDto,
+                                           @PathVariable long userId) throws ValidationException {
 
         return userService.updateUser(userDto, userId).map(userResult -> new ResponseEntity<>(userResult,
                         HttpStatus.OK))

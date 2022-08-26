@@ -27,17 +27,13 @@ public class ItemController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Item> createItem(@Valid @RequestBody ItemDto itemDto,
                                            @RequestHeader("X-Sharer-User-Id") long userId) {
-        if ((itemDto.getName() == null) || (itemDto.getName().isEmpty()) ||
-                (itemDto.getDescription() == null) || (itemDto.getDescription().isEmpty()) ||
-                (itemDto.getAvailable() == null)) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } else
+
             return itemService.create(itemDto, userId).map(newItem -> new ResponseEntity<>(newItem, HttpStatus.CREATED))
                     .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Item> editItem(@Valid @RequestBody ItemDto itemDto,
+    public ResponseEntity<Item> updateItem( @RequestBody ItemDto itemDto,
                                          @PathVariable long itemId,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
 

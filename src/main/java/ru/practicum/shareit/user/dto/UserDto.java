@@ -2,11 +2,22 @@ package ru.practicum.shareit.user.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 public class UserDto {
+    @NotNull
+    @NotEmpty
     private String name;
+    @NotNull
+    @NotEmpty
+    @Email(regexp = "\\w+@\\w+\\.(ru|com)",
+            message = "Email should be valid")
     private String email;
 
     public UserDto(String name, String email) {
