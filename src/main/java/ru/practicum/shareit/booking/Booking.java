@@ -20,5 +20,7 @@ Booking {
     private String description;
     private BookingStatus status;
 
-    public enum BookingStatus {WAITING, APPROVED,REJECTED,CANCELED};
+    public enum BookingStatus {WAITING, APPROVED, REJECTED, CANCELED}
+
+    ;
 }
