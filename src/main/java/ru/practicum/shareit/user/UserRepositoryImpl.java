@@ -26,7 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(User user) throws ValidationException {
-      validateNoExistEmail(user);
+        validateNoExistEmail(user);
         user.setId(generateId());
         users.put(userId, user);
         return user;
@@ -37,6 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
         return Optional.ofNullable(users.get(id));
 
     }
+
     @Override
     public boolean deleteUserById(long id) {
         return users.remove(id) != null;
@@ -46,10 +47,10 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> update(User user) throws ValidationException {
 
         if (users.containsKey(user.getId())) {
-            if(user.getName()!=null){
+            if (user.getName() != null) {
                 users.get(user.getId()).setName(user.getName());
             }
-            if(user.getEmail()!=null){
+            if (user.getEmail() != null) {
                 validateNoExistEmail(user);
                 users.get(user.getId()).setEmail(user.getEmail());
             }

@@ -3,9 +3,6 @@ package ru.practicum.shareit.user;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- * // TODO .
- */
 @Data
 @Builder
 public class User {

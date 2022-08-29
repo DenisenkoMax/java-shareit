@@ -11,9 +11,6 @@ import ru.practicum.shareit.item.model.Item;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(
@@ -28,14 +25,14 @@ public class ItemController {
     public ResponseEntity<Item> createItem(@Valid @RequestBody ItemDto itemDto,
                                            @RequestHeader("X-Sharer-User-Id") long userId) {
 
-            return itemService.create(itemDto, userId).map(newItem -> new ResponseEntity<>(newItem, HttpStatus.CREATED))
-                    .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        return itemService.create(itemDto, userId).map(newItem -> new ResponseEntity<>(newItem, HttpStatus.CREATED))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Item> updateItem( @RequestBody ItemDto itemDto,
-                                         @PathVariable long itemId,
-                                         @RequestHeader("X-Sharer-User-Id") long userId) {
+    public ResponseEntity<Item> updateItem(@RequestBody ItemDto itemDto,
+                                           @PathVariable long itemId,
+                                           @RequestHeader("X-Sharer-User-Id") long userId) {
 
 
         return itemService.updateItem(itemDto, itemId, userId).map(itemResult -> new ResponseEntity<>(itemResult,

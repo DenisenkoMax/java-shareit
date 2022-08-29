@@ -6,9 +6,6 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-/**
- * // TODO .
- */
 @Data
 @Builder
 public class ItemDto {
@@ -18,6 +15,7 @@ public class ItemDto {
         this.available = available;
         this.request = request;
     }
+
     @NotNull
     @NotEmpty
     private String name;

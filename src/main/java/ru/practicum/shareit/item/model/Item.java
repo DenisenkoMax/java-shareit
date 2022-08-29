@@ -4,9 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.requests.ItemRequest;
 
-/**
- * // TODO .
- */
 @Data
 @Builder
 public class Item {
@@ -22,7 +19,7 @@ public class Item {
     private Long id;
     private String name;
     private String description;
-    private  Long owner;
+    private Long owner;
     private Boolean available;
     private ItemRequest request;
 

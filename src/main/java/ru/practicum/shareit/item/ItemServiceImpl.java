@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -11,9 +10,7 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.util.Optional;
 
-
 @Service
-
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -40,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
         item.setId(itemId);
         return itemRepository.update(item, userId);
     }
+
     @Override
     public Optional<Item> findItemById(long itemId) {
         if (itemRepository.findItemById(itemId).isPresent()) {
