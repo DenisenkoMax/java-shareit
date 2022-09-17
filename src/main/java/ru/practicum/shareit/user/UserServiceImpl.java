@@ -2,8 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validation.Validation;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepositoryJpa repository;
+    private final Validation validation;
 
     @Override
     public List<User> getAllUsers() {
@@ -24,12 +27,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findUserById(long id) {
+    public Optional<User> findUserById(long id) throws NotFoundEx {
+        validation.validateUser(id);
         return repository.findById(id);
     }
 
     @Override
-    public Optional<User> updateUser(UserDto userDto, Long userId) {
+    public Optional<User> updateUser(UserDto userDto, Long userId) throws NotFoundEx {
         User user = findUserById(userId).get();
         if (userDto.getName() != null) {
             user.setName(userDto.getName());

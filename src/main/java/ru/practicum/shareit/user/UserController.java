@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -33,20 +34,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable long id) {
+    public ResponseEntity<User> findUserById(@PathVariable long id) throws NotFoundEx {
         return userService.findUserById(id).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUserById(@PathVariable long id) {
-        return userService.deleteUserById(id) ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Boolean> deleteUserById(@PathVariable long id) {
+        return new ResponseEntity<>(userService.deleteUserById(id), HttpStatus.OK);
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<User> updateUser(@RequestBody UserDto userDto,
-                                           @PathVariable long userId) {
+                                           @PathVariable long userId) throws NotFoundEx {
         return userService.updateUser(userDto, userId).map(userResult -> new ResponseEntity<>(userResult,
                         HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

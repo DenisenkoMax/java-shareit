@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -11,9 +12,9 @@ interface UserService {
 
     Optional<User> createUser(UserDto userDto);
 
-    Optional<User> findUserById(long id);
+    Optional<User> findUserById(long id) throws NotFoundEx;
 
-    Optional<User> updateUser(UserDto userDto, Long userId);
+    Optional<User> updateUser(UserDto userDto, Long userId) throws NotFoundEx;
 
     boolean deleteUserById(long id);
 
