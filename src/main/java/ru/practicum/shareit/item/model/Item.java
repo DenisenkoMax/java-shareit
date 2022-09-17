@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "items")
 @Data
-@ToString
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Item implements Serializable {
     public Item(Long id, String name, String description, User owner, Boolean available, ItemRequest request) {
@@ -46,7 +46,7 @@ public class Item implements Serializable {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @ToString.Exclude
-    private Set<Comment> comments = new HashSet<>();
+    private final Set<Comment> comments = new HashSet<>();
 
 
     @Override
