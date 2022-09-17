@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -143,8 +142,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
         CriteriaQuery<Booking> cr = cb.createQuery(Booking.class);
         Root<Booking> book = cr.from(Booking.class);
         cr.select(book).where(cb.and(cb.equal(book.get("item").get("id"), itemId)),
-                cb.or(cb.and
-                                (cb.lessThanOrEqualTo(book.get("start"), start),
+                cb.or(cb.and(cb.lessThanOrEqualTo(book.get("start"), start),
                                         (cb.greaterThanOrEqualTo(book.get("end"), start))),
                         cb.and(cb.lessThanOrEqualTo(book.get("start"), end),
                                 cb.greaterThanOrEqualTo(book.get("end"), end))

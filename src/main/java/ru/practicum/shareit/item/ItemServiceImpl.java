@@ -90,8 +90,7 @@ public class ItemServiceImpl implements ItemService {
         validation.validateUser(userId);
 
         return itemRepository.getItemsByOwner(userId).stream().map(p -> ItemMapper.toItemDtoAnswer
-                        (p,
-                                BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
+                        (p, BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
                                 BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
                                 commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n)).collect(Collectors.toList())))
                 .collect(Collectors.toList());
@@ -102,8 +101,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty() || text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.search(text).stream().map(p -> ItemMapper.toItemDto(p)).
-                collect(Collectors.toList());
+        return itemRepository.search(text).stream().map(p -> ItemMapper.toItemDto(p)).collect(Collectors.toList());
     }
 
     @Override
