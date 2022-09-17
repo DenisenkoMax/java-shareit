@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -111,7 +112,7 @@ public class ItemServiceImpl implements ItemService {
 
         Comment comment;
         if (bookingService.getUserBookings(userId, "PAST")
-                .stream().filter(p -> p.getStatus().equals(Booking.BookingStatus.APPROVED))
+                .stream().filter(p -> p.getStatus().equals(BookingStatus.APPROVED))
                 .anyMatch(p -> p.getItem().getId().equals(itemId))) {
             comment = CommentMapper.toComment(commentDto);
             comment.setCreated(LocalDateTime.now());

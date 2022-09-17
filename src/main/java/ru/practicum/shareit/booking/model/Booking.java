@@ -57,5 +57,4 @@ public class Booking {
         return getClass().hashCode();
     }
 
-    public enum BookingStatus {WAITING, APPROVED, REJECTED, CANCELED}
 }

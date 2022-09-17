@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.ItemRepositoryJpa;
@@ -39,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setItem(itemRepository.findById(bookingDto.getItemId()).get());
         validation.validateBookerIsOwner(booking.getItem(), userId);
-        booking.setStatus(Booking.BookingStatus.WAITING);
+        booking.setStatus(BookingStatus.WAITING);
 
         bookingRepository.save(booking);
         return BookingMapper.toBookingDto(booking);
@@ -52,13 +53,13 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         validation.validateItemOwner(booking.getItem(), userId);
 
-        if (booking.getStatus().equals(Booking.BookingStatus.APPROVED)) {
+        if (booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new IllegalArgumentEx("Item alredy available");
         }
         if (approved) {
-            booking.setStatus(Booking.BookingStatus.APPROVED);
+            booking.setStatus(BookingStatus.APPROVED);
         } else {
-            booking.setStatus(Booking.BookingStatus.REJECTED);
+            booking.setStatus(BookingStatus.REJECTED);
         }
         bookingRepository.save(booking);
         return BookingMapper.toBookingDtoAnswer(booking);
@@ -84,10 +85,10 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findBookingsByUser(userId);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findBookingsByUserAndStatus(userId, Booking.BookingStatus.WAITING);
+                bookings = bookingRepository.findBookingsByUserAndStatus(userId, BookingStatus.WAITING);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findBookingsByUserAndStatus(userId, Booking.BookingStatus.REJECTED);
+                bookings = bookingRepository.findBookingsByUserAndStatus(userId, BookingStatus.REJECTED);
                 break;
             case "PAST":
                 bookings = bookingRepository.findPastBookingsByUser(userId);
@@ -116,10 +117,10 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findItemBookingsByUser(userId);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, Booking.BookingStatus.WAITING);
+                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, BookingStatus.WAITING);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, Booking.BookingStatus.REJECTED);
+                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, BookingStatus.REJECTED);
                 break;
             case "PAST":
                 bookings = bookingRepository.findPastItemBookingsByUser(userId);

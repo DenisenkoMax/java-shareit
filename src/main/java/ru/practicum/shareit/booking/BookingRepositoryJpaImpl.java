@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 
 import javax.persistence.EntityManager;
 
@@ -29,7 +30,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
     }
 
     @Override
-    public List<Booking> findBookingsByUserAndStatus(Long userId, Booking.BookingStatus status) {
+    public List<Booking> findBookingsByUserAndStatus(Long userId, BookingStatus status) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Booking> cr = cb.createQuery(Booking.class);
         Root<Booking> book = cr.from(Booking.class);
@@ -88,7 +89,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
     }
 
     @Override
-    public List<Booking> findItemBookingsByUserAndStatus(Long userId, Booking.BookingStatus status) {
+    public List<Booking> findItemBookingsByUserAndStatus(Long userId, BookingStatus status) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Booking> cr = cb.createQuery(Booking.class);
         Root<Booking> book = cr.from(Booking.class);
