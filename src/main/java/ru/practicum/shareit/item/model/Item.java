@@ -32,12 +32,15 @@ public class Item {
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @ToString.Exclude
     private User owner;
     @Column(name = "available")
     private Boolean available;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
+    @ToString.Exclude
     private ItemRequest request;
+
     @OneToMany(mappedBy = "item",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
