@@ -35,8 +35,9 @@ public class Validation {
     }
 
     public void validateUserIsBookerOrOwner(Booking booking, Long userId) throws NotFoundEx {
-        if ((booking.getBooker().getId() != userId) &&
-                (booking.getItem().getOwner().getId() != userId))
+        Long bookerId = booking.getBooker().getId();
+        Long ownerId = booking.getItem().getOwner().getId();
+        if ((bookerId != userId) && (ownerId != userId))
             throw new NotFoundEx("User is not booker");
     }
 

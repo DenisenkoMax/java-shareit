@@ -29,19 +29,19 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) {
         return userService.createUser(userDto).map(newUser -> new ResponseEntity<>(newUser, HttpStatus.CREATED))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> findUserById(@PathVariable long id) {
         return userService.findUserById(id).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUserById(@PathVariable long id) {
-        return userService.deleteUserById(id) ? new ResponseEntity<>(null, HttpStatus.OK)
-                : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return userService.deleteUserById(id) ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PatchMapping("/{userId}")
@@ -49,6 +49,6 @@ public class UserController {
                                            @PathVariable long userId) {
         return userService.updateUser(userDto, userId).map(userResult -> new ResponseEntity<>(userResult,
                         HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
