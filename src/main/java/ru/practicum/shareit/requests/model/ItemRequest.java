@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class ItemRequest {
+public class ItemRequest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
