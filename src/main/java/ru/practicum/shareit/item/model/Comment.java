@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "comments")
 @Data
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Comment implements Serializable {
 

@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "items")
 @Data
-@Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Item {
     public Item(Long id, String name, String description, User owner, Boolean available, ItemRequest request) {
@@ -45,7 +45,7 @@ public class Item {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @ToString.Exclude
-    private final Set<Comment> comments = new HashSet<>();
+    private Set<Comment> comments = new HashSet<>();
 
 
     @Override
