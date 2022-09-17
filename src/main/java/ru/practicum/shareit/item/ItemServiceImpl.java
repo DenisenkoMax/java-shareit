@@ -90,10 +90,10 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDtoAnswer> getItemsByOwner(long userId) throws NotFoundEx {
         validation.validateUser(userId);
 
-        return itemRepository.getItemsByOwner(userId).stream().map(p -> ItemMapper.toItemDtoAnswer
-                        (p, BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
-                                BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
-                                commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n)).collect(Collectors.toList())))
+        return itemRepository.getItemsByOwner(userId).stream().map(p -> ItemMapper.toItemDtoAnswer(p,
+                        BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
+                        BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
+                        commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n)).collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 
