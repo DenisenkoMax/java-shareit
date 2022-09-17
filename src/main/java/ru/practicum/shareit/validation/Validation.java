@@ -29,19 +29,19 @@ public class Validation {
             throw new ValidationException("error");
     }
 
-    public void validateItemOwner(Item item, Long userId) throws NotFoundEx {
+    public void validateItgemOwner(Item item, long userId) throws NotFoundEx {
         if (item.getOwner().getId() != userId)
             throw new NotFoundEx("User is not owner");
     }
 
-    public void validateUserIsBookerOrOwner(Booking booking, Long userId) throws NotFoundEx {
-        Long bookerId = booking.getBooker().getId();
-        Long ownerId = booking.getItem().getOwner().getId();
+    public void validateUserIsBookerOrOwner(Booking booking, long userId) throws NotFoundEx {
+        long bookerId = booking.getBooker().getId();
+        long ownerId = booking.getItem().getOwner().getId();
         if ((bookerId != userId) && (ownerId != userId))
             throw new NotFoundEx("User is not booker");
     }
 
-    public void validateUser(Long userId) throws NotFoundEx {
+    public void validateUser(long userId) throws NotFoundEx {
         if (!userRepository.findById(userId).isPresent()) {
             throw new NotFoundEx("User not found");
         }
