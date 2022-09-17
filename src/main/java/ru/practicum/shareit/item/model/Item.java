@@ -6,6 +6,7 @@ import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -15,7 +16,7 @@ import java.util.Set;
 @Data
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class Item {
+public class Item implements Serializable {
     public Item(Long id, String name, String description, User owner, Boolean available, ItemRequest request) {
         this.id = id;
         this.name = name;
