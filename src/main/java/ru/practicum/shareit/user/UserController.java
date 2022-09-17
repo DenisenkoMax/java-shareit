@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) throws ValidationException {
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) {
         return userService.createUser(userDto).map(newUser -> new ResponseEntity<>(newUser, HttpStatus.CREATED))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
@@ -46,8 +46,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<User> updateUser(@RequestBody UserDto userDto,
-                                           @PathVariable long userId) throws ValidationException {
-
+                                           @PathVariable long userId) {
         return userService.updateUser(userDto, userId).map(userResult -> new ResponseEntity<>(userResult,
                         HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));

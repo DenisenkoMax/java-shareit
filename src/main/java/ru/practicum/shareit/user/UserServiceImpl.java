@@ -1,22 +1,17 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
-
-    @Autowired
-    public UserServiceImpl(@Qualifier("userRepositoryImpl") UserRepository repository) {
-        this.repository = repository;
-    }
+    private final UserRepositoryJpa repository;
 
     @Override
     public List<User> getAllUsers() {
@@ -24,25 +19,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> createUser(UserDto userDto) throws ValidationException {
-        return Optional.ofNullable(repository.create(UserMapper.toUser(userDto)));
+    public Optional<User> createUser(UserDto userDto) {
+        return Optional.ofNullable(repository.save(UserMapper.toUser(userDto)));
     }
 
     @Override
     public Optional<User> findUserById(long id) {
-        return repository.findUserById(id);
+        return repository.findById(id);
     }
 
     @Override
-    public Optional<User> updateUser(UserDto userDto, Long userId) throws ValidationException {
-        User user;
-        user = UserMapper.toUser(userDto);
-        user.setId(userId);
-        return repository.update(user);
+    public Optional<User> updateUser(UserDto userDto, Long userId) {
+        User user = findUserById(userId).get();
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
+        }
+
+        return Optional.ofNullable(repository.save(user));
     }
 
     @Override
     public boolean deleteUserById(long id) {
-        return repository.deleteUserById(id);
+        repository.deleteById(id);
+        return true;
     }
 }
