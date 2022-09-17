@@ -1,8 +1,7 @@
 package ru.practicum.shareit.item;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepositoryJpa;
 import ru.practicum.shareit.validation.Validation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -77,12 +78,12 @@ public class ItemServiceImpl implements ItemService {
             return Optional.ofNullable(ItemMapper.toItemDtoAnswer(item.get(),
                     BookingMapper.toBookingDto(lastBooking),
                     BookingMapper.toBookingDto(nextBooking),
-                    commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p)).collect(Collectors.toList())
+                    commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p)).collect(Collectors.toSet())
             ));
         } else return Optional.ofNullable(ItemMapper.toItemDtoAnswer(item.get(),
                 null,
                 null,
-                commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p)).collect(Collectors.toList())
+                commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p)).collect(Collectors.toSet())
         ));
     }
 
@@ -91,10 +92,10 @@ public class ItemServiceImpl implements ItemService {
         validation.validateUser(userId);
 
         return itemRepository.getItemsByOwner(userId).stream().map(p -> ItemMapper.toItemDtoAnswer(p,
-                        BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
-                        BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
-                        commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n)).collect(Collectors.toList())))
-                .collect(Collectors.toList());
+                BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
+                BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
+                commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n))
+                        .collect(Collectors.toSet()))).collect(Collectors.toList());
     }
 
     @Override

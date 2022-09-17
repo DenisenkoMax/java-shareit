@@ -3,13 +3,13 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 
 public class ItemDtoAnswer {
     public ItemDtoAnswer(Long id, String name, String description, Boolean available, Long ownerId,
-                         BookingDto lastBooking, BookingDto nextBooking, List<CommentDto> comments) {
+                         BookingDto lastBooking, BookingDto nextBooking, Set<CommentDto> comments) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -27,6 +27,6 @@ public class ItemDtoAnswer {
     private Long ownerId;
     private BookingDto lastBooking;
     private BookingDto nextBooking;
-    private List<CommentDto> comments;
+    private Set<CommentDto> comments;
 
 }
