@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class ItemMapper {
     public static ItemDtoAnswer toItemDtoAnswer(Item item, BookingDto last, BookingDto next, Set<CommentDto> commentDto) {
-        if (item != null) {
+        if (item != null)
             return new ItemDtoAnswer(
                     item.getId(),
                     item.getName(),
@@ -21,22 +21,22 @@ public class ItemMapper {
                     next,
                     commentDto
             );
-        } else return null;
+        else return null;
     }
 
     public static ItemDto toItemDto(Item item) {
-        if (item != null) {
+        if (item != null)
             return new ItemDto(
                     item.getId(),
                     item.getName(),
                     item.getDescription(),
                     item.getAvailable()
             );
-        } else return null;
+        else return null;
     }
 
     public static Item toItem(ItemDto itemDto) {
-        if (itemDto != null) {
+        if (itemDto != null)
             return new Item(
                     itemDto.getId(),
                     itemDto.getName(),
@@ -44,6 +44,6 @@ public class ItemMapper {
                     null,
                     itemDto.getAvailable(),
                     null);
-        } else return null;
+        else return null;
     }
 }

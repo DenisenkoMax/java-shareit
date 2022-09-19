@@ -6,7 +6,7 @@ import ru.practicum.shareit.item.model.Comment;
 public class CommentMapper {
 
     public static Comment toComment(CommentDto commentDto) {
-        if (commentDto != null) {
+        if (commentDto != null)
             return new Comment(
                     commentDto.getId(),
                     commentDto.getText(),
@@ -14,11 +14,11 @@ public class CommentMapper {
                     null,
                     null
             );
-        } else return null;
+        else return null;
     }
 
     public static CommentDto toCommentDto(Comment comment) {
-        if (comment != null) {
+        if (comment != null)
             return new CommentDto(
                     comment.getId(),
                     comment.getText(),
@@ -26,6 +26,6 @@ public class CommentMapper {
                     comment.getAuthor().getName(),
                     comment.getCreated()
             );
-        } else return null;
+        else return null;
     }
 }

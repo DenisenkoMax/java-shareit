@@ -51,10 +51,4 @@ public class Booking {
         Booking booking = (Booking) o;
         return id != null && Objects.equals(id, booking.id);
     }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
 }
