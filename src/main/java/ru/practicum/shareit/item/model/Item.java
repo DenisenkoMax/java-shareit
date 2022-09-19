@@ -1,17 +1,15 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-
+@EqualsAndHashCode
 @Entity
 @Table(name = "items")
 @Data
@@ -48,13 +46,4 @@ public class Item implements Serializable {
             orphanRemoval = true)
     @ToString.Exclude
     private final Set<Comment> comments = new HashSet<>();
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Item item = (Item) o;
-        return id != null && Objects.equals(id, item.id);
-    }
 }
