@@ -8,8 +8,7 @@ import ru.practicum.shareit.user.UserMapper;
 
 public class BookingMapper {
     public static BookingDtoAnswer toBookingDtoAnswer(Booking booking) {
-        if (booking == null)
-            return null;
+        if (booking == null) return null;
         else return new BookingDtoAnswer(
                 booking.getId(),
                 booking.getStart(),
@@ -20,8 +19,7 @@ public class BookingMapper {
     }
 
     public static BookingDto toBookingDto(Booking booking) {
-        if (booking == null)
-            return null;
+        if (booking == null) return null;
         else return new BookingDto(
                 booking.getId(),
                 booking.getStart(),
@@ -32,8 +30,7 @@ public class BookingMapper {
     }
 
     public static Booking toBooking(BookingDto bookingDto) {
-        if (bookingDto == null)
-            return null;
+        if (bookingDto == null) return null;
         else return new Booking(
                 bookingDto.getId(),
                 bookingDto.getStart(),
