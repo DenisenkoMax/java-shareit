@@ -5,8 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 
-
-@EqualsAndHashCode
 @Entity
 @Table(name = "users")
 @Data

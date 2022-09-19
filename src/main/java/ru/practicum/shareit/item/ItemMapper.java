@@ -10,40 +10,40 @@ import java.util.Set;
 
 public class ItemMapper {
     public static ItemDtoAnswer toItemDtoAnswer(Item item, BookingDto last, BookingDto next, Set<CommentDto> commentDto) {
-        if (item != null)
-            return new ItemDtoAnswer(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    item.getOwner().getId(),
-                    last,
-                    next,
-                    commentDto
-            );
-        else return null;
+        if (item == null)
+            return null;
+        else return new ItemDtoAnswer(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getOwner().getId(),
+                last,
+                next,
+                commentDto
+        );
     }
 
     public static ItemDto toItemDto(Item item) {
-        if (item != null)
-            return new ItemDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable()
-            );
-        else return null;
+        if (item == null)
+            return null;
+        else return new ItemDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable()
+        );
     }
 
     public static Item toItem(ItemDto itemDto) {
-        if (itemDto != null)
-            return new Item(
-                    itemDto.getId(),
-                    itemDto.getName(),
-                    itemDto.getDescription(),
-                    null,
-                    itemDto.getAvailable(),
-                    null);
-        else return null;
+        if (itemDto == null)
+            return null;
+        else return new Item(
+                itemDto.getId(),
+                itemDto.getName(),
+                itemDto.getDescription(),
+                null,
+                itemDto.getAvailable(),
+                null);
     }
 }
