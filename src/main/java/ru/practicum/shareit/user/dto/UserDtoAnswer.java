@@ -9,8 +9,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class UserDto {
 
+public class UserDtoAnswer {
+    Long id;
     @NotNull
     @NotEmpty
     private String name;
@@ -20,7 +21,8 @@ public class UserDto {
             message = "Email should be valid")
     private String email;
 
-    public UserDto(String name, String email) {
+    public UserDtoAnswer(Long id, String name, String email) {
+        this.id = id;
         this.name = name;
         this.email = email;
     }
