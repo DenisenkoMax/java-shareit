@@ -42,7 +42,7 @@ public class ItemControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void CreateItemStatus200Test() throws Exception {
+    public void createItemStatus200Test() throws Exception {
         Long userId = 1L;
         ItemDto itemDto = new ItemDto(null, "item1", "item1", true, null);
         ItemDto itemDtoAnswer = new ItemDto(1L, "item1", "item1", true,
@@ -63,7 +63,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void CreateItemNoUserStatus400() throws Exception {
+    public void createItemNoUserStatus400() throws Exception {
         ItemDto itemDto = new ItemDto(null, "item1", "item1", true, null);
 
         mockMvc.perform(post("/items")
@@ -74,7 +74,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void CreateItemErrorUserIdStatus400() throws Exception {
+    public void createItemErrorUserIdStatus400() throws Exception {
         Long userId = 15L;
         ItemDto itemDto = new ItemDto(null, "item1", "item1", true, null);
 
@@ -89,7 +89,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void CreateItemNoAvailableStatus400() throws Exception {
+    public void createItemNoAvailableStatus400() throws Exception {
         ItemDto itemDto = new ItemDto(null, "item1", "item1", null, null);
 
         mockMvc.perform(post("/items").content(objectMapper.writeValueAsString(itemDto))
@@ -98,40 +98,35 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void CreateItemNoNameStatus400() throws Exception {
+    public void updateItemNoNameStatus400() throws Exception {
         ItemDto itemDto = new ItemDto(null, "", "item1", true, null);
-
         mockMvc.perform(post("/items").content(objectMapper.writeValueAsString(itemDto))
                 .header("X-Sharer-User-Id", 1L).characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void CreateItemNoDescriptionStatus400() throws Exception {
+    public void createItemNoDescriptionStatus400() throws Exception {
         ItemDto itemDto = new ItemDto(null, "item1", "", true, null);
-
         mockMvc.perform(post("/items").content(objectMapper.writeValueAsString(itemDto))
                 .header("X-Sharer-User-Id", 1L).characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void UpdateItemStatus200() throws Exception {
+    public void updateItemStatus200() throws Exception {
         Long userId = 1L;
         Long itemId = 1L;
         ItemDto itemDto = new ItemDto(null, "item1", "", true, null);
         ItemDto itemDtoAnswer = new ItemDto(itemId, "item", "desc", true,
                 userId);
-
         when(service.updateItem(itemDto, itemId, userId)).thenReturn(Optional.of(itemDtoAnswer));
-
 
         mockMvc.perform(patch("/items/{id}", itemId).content(objectMapper.writeValueAsString(itemDto))
                         .header("X-Sharer-User-Id", userId).characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is(itemDtoAnswer.getName())));
-
         verify(service, Mockito.times(1)).updateItem(itemDto, itemId, userId);
     }
 
@@ -146,31 +141,24 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void UpdateItemErrorUserStatus404() throws Exception {
+    public void updateItemErrorUserStatus404() throws Exception {
         Long userId = 100L;
         Long itemId = 1L;
         ItemDto itemDto = new ItemDto(null, "item1", "", true, null);
-        ItemDto itemDtoAnswer = new ItemDto(itemId, "item", "desc", true,
-                userId);
-
         when(service.updateItem(itemDto, itemId, userId)).thenThrow(new NotFoundEx("User not found"));
-
         mockMvc.perform(patch("/items/{id}", itemId).content(objectMapper.writeValueAsString(itemDto))
                 .header("X-Sharer-User-Id", userId).characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
-
         verify(service, Mockito.times(1)).updateItem(itemDto, itemId, userId);
     }
 
     @Test
-    public void FindItemByIdStatus200() throws Exception {
+    public void findItemByIdStatus200() throws Exception {
         Long userId = 1L;
         Long itemId = 1L;
         ItemDtoAnswer itemDtoAnswer = new ItemDtoAnswer(1L, "item1", "item1", true,
                 null, null, null, null);
-
         when(service.findItemById(userId, itemId)).thenReturn(Optional.of(itemDtoAnswer));
-
         mockMvc.perform(get("/items/{id}", itemId)
                         .header("X-Sharer-User-Id", userId)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -178,20 +166,15 @@ public class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is(itemDtoAnswer.getName())));
-
         verify(service, Mockito.times(1)).findItemById(userId, itemId);
     }
 
     @Test
-    public void FindAllOwnersItemsStatus200() throws Exception {
+    public void findAllOwnersItemsStatus200() throws Exception {
         Long userId = 1L;
-
         ItemDtoAnswer itemDtoAnswer = new ItemDtoAnswer(1L, "item1", "item1", true,
                 null, null, null, null);
-
-
         when(service.getItemsByOwner(userId, 0, 10)).thenReturn(List.of(itemDtoAnswer));
-
         mockMvc.perform(get("/items")
                         .header("X-Sharer-User-Id", userId)
                         .param("from", String.valueOf(0))
@@ -202,19 +185,15 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is(itemDtoAnswer.getName())));
-
         verify(service, Mockito.times(1)).getItemsByOwner(userId, 0, 10);
     }
 
     @Test
-    public void GetItemsNoParametrsStatus200() throws Exception {
+    public void getItemsNoParametrsStatus200() throws Exception {
         Long userId = 1L;
-
         ItemDtoAnswer itemDtoAnswer = new ItemDtoAnswer(1L, "item1", "item1", true,
                 null, null, null, null);
-
         when(service.getItemsByOwner(userId, 0, 10)).thenReturn(List.of(itemDtoAnswer));
-
         mockMvc.perform(get("/items")
                         .header("X-Sharer-User-Id", userId)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -223,18 +202,14 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is(itemDtoAnswer.getName())));
-
         verify(service, Mockito.times(1)).getItemsByOwner(userId, 0, 10);
     }
 
     @Test
-    public void GetItemsErrorPaginationStatus400() throws Exception {
+    public void getItemsErrorPaginationStatus400() throws Exception {
         Long userId = 1L;
-        ItemDtoAnswer itemDtoAnswer = new ItemDtoAnswer(1L, "item1", "item1", true,
-                null, null, null, null);
         when(service.getItemsByOwner(userId, 0, -10))
                 .thenThrow(new IllegalArgumentEx("Argument size incorrect"));
-
         mockMvc.perform(get("/items")
                         .header("X-Sharer-User-Id", userId)
                         .param("from", String.valueOf(0))
@@ -242,12 +217,11 @@ public class ItemControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-
         verify(service, Mockito.times(1)).getItemsByOwner(userId, 0, -10);
     }
 
     @Test
-    public void SearchItemsStatus200() throws Exception {
+    public void searchItemsStatus200() throws Exception {
         Long userId = 1L;
 
         String search = "text";
@@ -263,17 +237,14 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is(itemDto.getName())));
-
         verify(service, Mockito.times(1)).search(search, 0, 10);
     }
 
     @Test
-    public void SearchItemsErrorPaginationStatus400() throws Exception {
+    public void searchItemsErrorPaginationStatus400() throws Exception {
         Long userId = 1L;
-
         when(service.search("sfdsfd", 0, -10))
                 .thenThrow(new IllegalArgumentEx("Argument size incorrect"));
-
         mockMvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", userId)
                         .param("text", "sfdsfd")
@@ -282,22 +253,18 @@ public class ItemControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-
         verify(service, Mockito.times(1)).search("sfdsfd", 0, -10);
     }
 
     @Test
-    public void CreateCommentStatus200() throws Exception {
+    public void createCommentStatus200() throws Exception {
         Long userId = 1L;
         Long itemId = 1L;
         CommentDto commentDto = new CommentDto(null, "text", null, "author",
                 null);
         CommentDto commentDtoAnswer = new CommentDto(1L, "text", 1l, "author",
                 LocalDateTime.of(2022, Month.SEPTEMBER, 5, 8, 0));
-
-
         when(service.createComment(userId, itemId, commentDto)).thenReturn(commentDtoAnswer);
-
         mockMvc.perform(post("/items/{itemId}/comment", itemId)
                         .content(objectMapper.writeValueAsString(commentDto))
                         .header("X-Sharer-User-Id", userId)
@@ -306,20 +273,16 @@ public class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.text", is(commentDtoAnswer.getText())));
-
-
         verify(service, Mockito.times(1)).createComment(userId, itemId, commentDto);
     }
 
     @Test
-    public void CreateCommentNoTextStatus400() throws Exception {
-
+    public void createCommentNoTextStatus400() throws Exception {
         Long userId = 1L;
         Long itemId = 1L;
         CommentDto commentDto = new CommentDto(null, "text", null, "author",
                 null);
         when(service.createComment(userId, itemId, commentDto)).thenThrow(new IllegalArgumentEx("Argument size incorrect"));
-
         mockMvc.perform(post("/items/{itemId}/comment", itemId)
                         .content(objectMapper.writeValueAsString(commentDto))
                         .header("X-Sharer-User-Id", userId)

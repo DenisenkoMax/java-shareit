@@ -27,7 +27,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDtoAnswer createItemRequest(Long userId, ItemRequestDto itemRequestDto) throws NotFoundEx {
-            validation.validateUser(userId);
+        validation.validateUser(userId);
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto);
         itemRequest.setRequestor(userRepository.findById(userId).get());
         itemRequest.setCreated(LocalDateTime.now());
@@ -38,10 +38,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public Optional<ItemRequestDtoAnswer> findItemRequestById(Long userId, Long id) throws NotFoundEx {
         validation.validateUser(userId);
-        return (itemRequestRepository.findById(id).isPresent())
-                ?Optional.ofNullable(ItemRequestMapper.toItemRequestDtoAnswer(itemRequestRepository.findById(id)
-                .get()))
-                :Optional.empty(); }
+        return (itemRequestRepository.findById(id).isPresent()) ? Optional
+                .ofNullable(ItemRequestMapper.toItemRequestDtoAnswer(itemRequestRepository.findById(id)
+                        .get())) :
+                Optional.empty();
+    }
 
     @Override
     public List<ItemRequestDtoAnswer> findUserOwnerItemRequests(Long userId, int from, int size) throws NotFoundEx,

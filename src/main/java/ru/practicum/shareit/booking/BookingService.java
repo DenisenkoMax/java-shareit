@@ -17,11 +17,11 @@ public interface BookingService {
 
     BookingDtoAnswer getBookingById(Long userId, Long bookingId) throws NotFoundEx;
 
-    List<BookingDtoAnswer> getUserBookings(Long userId, String state, int from, int size) throws NotFoundEx
-            , IllegalArgumentEx;
+    List<BookingDtoAnswer> getUserBookings(Long userId, String state, int from, int size) throws NotFoundEx,
+            IllegalArgumentEx;
 
-    List<BookingDtoAnswer> getItemsBookings(Long userId, String state, int from, int size) throws NotFoundEx
-            , IllegalArgumentEx;
+    List<BookingDtoAnswer> getItemsBookings(Long userId, String state, int from, int size) throws NotFoundEx,
+            IllegalArgumentEx;
 
     @Transactional(readOnly = true)
     Booking getItemLastBookings(Long itemId, Long ownerId);

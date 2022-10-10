@@ -39,9 +39,9 @@ public class ItemReposytoryJpaTest {
         entityManager.persist(item1);
         Item item2 = new Item(null, "пылесос", "новый", user1, true, null);
         entityManager.persist(item2);
-        assertThat(item1.getName()).isEqualTo(itemRepositoryJpa.getItemsByOwner(user1.getId()
-                , PageRequest.of(0, 10)).getContent().get(0).getName());
-        assertThat(item2.getName()).isEqualTo(itemRepositoryJpa.getItemsByOwner(user1.getId()
-                , PageRequest.of(0, 10)).getContent().get(1).getName());
+        assertThat(item1.getName()).isEqualTo(itemRepositoryJpa.getItemsByOwner(user1.getId(),
+                PageRequest.of(0, 10)).getContent().get(0).getName());
+        assertThat(item2.getName()).isEqualTo(itemRepositoryJpa.getItemsByOwner(user1.getId(),
+                PageRequest.of(0, 10)).getContent().get(1).getName());
     }
 }

@@ -121,8 +121,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) throws NotFoundEx
-            , IllegalArgumentEx {
+    public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) throws NotFoundEx,
+            IllegalArgumentEx {
         validation.validateUser(userId);
         validation.validateItem(itemId);
 

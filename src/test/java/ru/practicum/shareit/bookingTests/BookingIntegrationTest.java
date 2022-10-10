@@ -36,7 +36,7 @@ public class BookingIntegrationTest {
 
 
     @Test
-    public void CreateBookingAndConfirmTest() throws NotFoundEx, IllegalArgumentEx {
+    public void createBookingAndConfirmTest() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(null, "user", "user@email.ru", null, null, null);
         entityManager.persist(user);
         User user2 = new User(null, "user2", "user2@email.ru", null, null, null);
@@ -47,8 +47,8 @@ public class BookingIntegrationTest {
                 .minusHours(1L), item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
         bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
-        Comment comment = new Comment(null, "комментарий", item, user2
-                , LocalDateTime.now());
+        Comment comment = new Comment(null, "комментарий", item, user2,
+                LocalDateTime.now());
         entityManager.persist(comment);
         ItemDtoAnswer itemDtoAnswer = itemService.getItemsByOwner(user.getId(), 0, 15).get(0);
         assertThat(comment.getText(), equalTo(itemDtoAnswer.getComments()
@@ -56,37 +56,33 @@ public class BookingIntegrationTest {
     }
 
     @Test
-    public void GetUserBookingsTest() throws NotFoundEx, IllegalArgumentEx {
+    public void getUserBookingsTest() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(null, "user", "user@email.ru", null, null, null);
         entityManager.persist(user);
         User user2 = new User(null, "user2", "user2@email.ru", null, null, null);
         entityManager.persist(user2);
-        ;
         Item item = new Item(null, "Молоток", "кривой", user, true, null);
         entityManager.persist(item);
         Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
                 .minusHours(1L), item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
         bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
-
         assertThat(booking.getId(), equalTo(bookingService.getUserBookings(user2.getId(), "PAST", 0, 10)
                 .get(0).getId()));
     }
 
     @Test
-    public void GetUserItemTest() throws NotFoundEx, IllegalArgumentEx {
+    public void getUserItemTest() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(null, "user", "user@email.ru", null, null, null);
         entityManager.persist(user);
         User user2 = new User(null, "user2", "user2@email.ru", null, null, null);
         entityManager.persist(user2);
-        ;
         Item item = new Item(null, "Молоток", "кривой", user, true, null);
         entityManager.persist(item);
         Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
                 .minusHours(1L), item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
         bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
-
         assertThat(item.getId(), equalTo(bookingService.getItemsBookings(user.getId(), "PAST", 0, 10)
                 .get(0).getId()));
     }

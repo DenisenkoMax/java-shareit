@@ -62,7 +62,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    public void CreateItemTest() {
+    public void createItemTest() {
         TypedQuery<Item> query = em.createQuery("Select u from Item u where u.name = :name", Item.class);
         Item item2 = query
                 .setParameter("name", item.getName())
@@ -73,7 +73,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    public void FindByOwner() throws NotFoundEx, IllegalArgumentEx {
+    public void findByOwner() throws NotFoundEx, IllegalArgumentEx {
         ItemDtoAnswer itemDtoAnswer = itemService.getItemsByOwner(user.getId(), 0, 15).get(0);
         assertThat(itemDtoAnswer.getId(), notNullValue());
         assertThat(itemDtoAnswer.getName(), equalTo(item.getName()));
@@ -81,7 +81,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    public void SearchTest() throws IllegalArgumentEx {
+    public void searchTest() throws IllegalArgumentEx {
         ItemDto itemDtoAnswer = itemService.search("Молот", 0, 10).get(0);
         assertThat(itemDtoAnswer.getId(), notNullValue());
         assertThat(itemDtoAnswer.getName(), equalTo(item.getName()));
@@ -89,13 +89,13 @@ public class ItemIntegrationTest {
     }
 
     @Test
-    public void CreateCommentTest() throws NotFoundEx, IllegalArgumentEx {
+    public void createCommentTest() throws NotFoundEx, IllegalArgumentEx {
         Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
                 .minusHours(1L), item, user2, BookingStatus.WAITING);
         em.persist(booking);
         bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
-        CommentDto commentDto = new CommentDto(1L, "комментарий", 1L, "name"
-                , LocalDateTime.now());
+        CommentDto commentDto = new CommentDto(1L, "комментарий", 1L, "name",
+                LocalDateTime.now());
         itemService.createComment(user2.getId(), item.getId(), commentDto);
         ItemDtoAnswer itemDtoAnswer = itemService.getItemsByOwner(user.getId(), 0, 15).get(0);
         assertThat(commentDto.getText(), equalTo(itemDtoAnswer.getComments()

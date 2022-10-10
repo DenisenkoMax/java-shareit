@@ -47,10 +47,10 @@ public class ItemRequestIntegrationTest {
     }
 
     @Test
-    public void CreateItemRequest() throws NotFoundEx {
+    public void createItemRequest() {
 
-        TypedQuery<ItemRequest> query = em.createQuery("Select u from ItemRequest u where u.id = :id"
-                , ItemRequest.class);
+        TypedQuery<ItemRequest> query = em.createQuery("Select u from ItemRequest u where u.id = :id",
+                ItemRequest.class);
         ItemRequest itemRequestAnswer = query
                 .setParameter("id", itemRequest.getId())
                 .getSingleResult();

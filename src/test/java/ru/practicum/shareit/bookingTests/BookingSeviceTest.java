@@ -59,9 +59,8 @@ public class BookingSeviceTest {
     }
 
     @Test
-    public void CreateBooking() throws NotFoundEx, IllegalArgumentEx {
+    public void createBooking() throws NotFoundEx, IllegalArgumentEx {
         Long userId = 1L;
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "text");
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -70,7 +69,6 @@ public class BookingSeviceTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-
         Mockito.doNothing().when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItem(anyLong());
         Mockito.doNothing().when(validation).validateItemAvailable(anyLong());
@@ -85,9 +83,8 @@ public class BookingSeviceTest {
     }
 
     @Test
-    public void CreateBookingWrongUser() throws NotFoundEx, IllegalArgumentEx {
+    public void createBookingWrongUser() throws NotFoundEx, IllegalArgumentEx {
         Long userId = 1L;
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "text");
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -96,7 +93,6 @@ public class BookingSeviceTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-
         Mockito.doThrow(new NotFoundEx("")).when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItem(anyLong());
         Mockito.doNothing().when(validation).validateItemAvailable(anyLong());
@@ -112,7 +108,6 @@ public class BookingSeviceTest {
 
     @Test
     public void confirmBookingRequestTest() throws NotFoundEx, IllegalArgumentEx {
-        ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "text");
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -122,12 +117,10 @@ public class BookingSeviceTest {
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
         BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end,
                 ItemMapper.toItemDto(item), UserMapper.toUserDtoAnswer(user), BookingStatus.APPROVED);
-
         Mockito.doNothing().when(validation).validateBooking(anyLong());
         Mockito.doNothing().when(validation).validateUser(anyLong());
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
         Mockito.doNothing().when(validation).validateItemOwner(any(), anyLong());
-
         Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.confirmBookingRequest(1L, 1L, true)
                 .getStatus());
     }
@@ -147,7 +140,6 @@ public class BookingSeviceTest {
         Mockito.doNothing().when(validation).validateUser(anyLong());
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
         Mockito.doNothing().when(validation).validateBookerIsOwner(item, 1L);
-
         Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.confirmBookingRequest(1L, 1L, true)
                 .getStatus());
     }

@@ -19,9 +19,7 @@ public class UserDtoJsonTest {
     @Test
     void serializedTest() throws IOException {
         UserDto userDto = new UserDto("name", "name@dsd.ru");
-
         JsonContent<UserDto> result = jacksonTester.write(userDto);
-
         then(result).extractingJsonPathStringValue("$.name").isEqualTo("name");
         then(result).extractingJsonPathStringValue("$.email").isEqualTo("name@dsd.ru");
     }

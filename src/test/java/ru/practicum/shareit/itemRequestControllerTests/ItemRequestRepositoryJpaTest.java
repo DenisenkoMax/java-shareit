@@ -29,8 +29,8 @@ public class ItemRequestRepositoryJpaTest {
         entityManager.persist(user);
         ItemRequest itemRequest = new ItemRequest(null, "text", user, LocalDateTime.now(), null);
         entityManager.persist(itemRequest);
-        Assertions.assertEquals("text", itemRequestRepositoryJpa.findItemRequestsByUser(user.getId()
-                , PageRequest.of(0, 10)).getContent().get(0).getDescription());
+        Assertions.assertEquals("text", itemRequestRepositoryJpa.findItemRequestsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0).getDescription());
     }
 
     @Test
@@ -43,9 +43,7 @@ public class ItemRequestRepositoryJpaTest {
         entityManager.persist(user2);
         ItemRequest itemRequest = new ItemRequest(null, "text", user2, LocalDateTime.now(), null);
         entityManager.persist(itemRequest);
-        Assertions.assertEquals("text", itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(user.getId()
-                , PageRequest.of(0, 10)).getContent().get(0).getDescription());
+        Assertions.assertEquals("text", itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0).getDescription());
     }
-
-
 }

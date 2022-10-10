@@ -47,46 +47,40 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    public void CreateItemRequest() throws NotFoundEx {
+    public void createItemRequest() throws NotFoundEx {
         Long userId = 1L;
         ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "text");
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-
         Mockito.doNothing().when(validation).validateRequester(anyLong());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRequestRepositoryJpa.save(any())).thenReturn(itemRequest);
-
         Assertions.assertEquals("text", itemRequestService.createItemRequest(userId, itemRequestDto)
                 .getDescription());
     }
 
     @Test
-    public void CreateItemRequestWrongRequester() throws NotFoundEx {
+    public void createItemRequestWrongRequester() throws NotFoundEx {
         Long userId = 1L;
         ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "text");
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-
         Mockito.doThrow(new NotFoundEx("")).when(validation).validateUser(any());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRequestRepositoryJpa.save(any())).thenReturn(itemRequest);
-
         Assertions.assertThrows(NotFoundEx.class,
                 () -> itemRequestService.createItemRequest(userId, itemRequestDto));
     }
 
     @Test
-    public void FindItemRequestById() throws NotFoundEx {
+    public void findItemRequestById() throws NotFoundEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-
         Mockito.doNothing().when(validation).validateRequester(anyLong());
         when(itemRequestRepositoryJpa.findById(any())).thenReturn(Optional.of(itemRequest));
-
         Assertions.assertEquals("text", itemRequestService.findItemRequestById(1L, 1L).get()
                 .getDescription());
     }
@@ -96,12 +90,10 @@ public class ItemRequestServiceTest {
         User user = new User(2L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-
         Mockito.doNothing().when(validation).validateRequester(anyLong());
         Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
         when(itemRequestRepositoryJpa.findItemRequestsByUser(anyLong(), any())).
                 thenReturn(new PageImpl<>(List.of(itemRequest)));
-
         Assertions.assertEquals("text", itemRequestService.findUserOwnerItemRequests(2L, 0, 10)
                 .get(0).getDescription());
     }
@@ -111,15 +103,11 @@ public class ItemRequestServiceTest {
         User user = new User(2L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-
         Mockito.doNothing().when(validation).validateRequester(anyLong());
         Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
         when(itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(anyLong(), any())).
                 thenReturn(new PageImpl<>(List.of(itemRequest)));
-
         Assertions.assertEquals("text", itemRequestService.findAnotherUsersItemRequests(1L, 0, 10)
                 .get(0).getDescription());
     }
-
-
 }

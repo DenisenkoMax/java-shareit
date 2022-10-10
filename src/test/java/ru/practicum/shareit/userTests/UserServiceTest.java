@@ -40,7 +40,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void CreateUserTest() {
+    public void createUserTest() {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         UserDto userDto = new UserDto("name", "email");
         when(userRepositoryJpa.save(UserMapper.toUser(userDto))).thenReturn(user);
@@ -48,7 +48,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void UpdateUserTest() throws NotFoundEx {
+    public void updateUserTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         UserDto userDto = new UserDto("name", "email");
         when(userRepositoryJpa.save(any())).thenReturn(user);
@@ -58,7 +58,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void UpdateUserWrongUserTest() throws NotFoundEx {
+    public void updateUserWrongUserTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         UserDto userDto = new UserDto("name", "email");
         when(userRepositoryJpa.save(any())).thenReturn(user);
@@ -69,7 +69,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void GetAllUsersTest() throws NotFoundEx {
+    public void getAllUsersTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         when(userRepositoryJpa.findAll()).thenReturn(List.of(user));
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
@@ -78,7 +78,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void FindByIdTest() throws NotFoundEx {
+    public void findByIdTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
@@ -87,7 +87,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void DeleteByIdTest() throws NotFoundEx {
+    public void deleteByIdTest() throws NotFoundEx {
         Mockito.doNothing().when(userRepositoryJpa).deleteById(anyLong());
         userService.deleteUserById(1L);
         verify(userRepositoryJpa, Mockito.times(1)).deleteById(1L);

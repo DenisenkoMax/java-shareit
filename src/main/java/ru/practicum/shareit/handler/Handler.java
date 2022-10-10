@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.shareit.exception.*;
 @RestControllerAdvice
+
 public class Handler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundEx.class)
     public ResponseEntity<Object> handleNotFound(NotFoundEx exception, WebRequest request) {

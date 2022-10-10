@@ -38,7 +38,7 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void CreateUserStatust200Test() throws Exception {
+    void createUserStatust200Test() throws Exception {
         UserDto userDto = new UserDto("user1", "user1@domen.ru");
         User user = new User(1L, "user1", "user1@domen.ru", null, null, null);
 
@@ -56,7 +56,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void CreateUserErrorEmailStatus400Test() throws Exception {
+    void createUserErrorEmailStatus400Test() throws Exception {
         UserDto userDto = new UserDto("user1", "1");
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(userDto))
@@ -66,11 +66,10 @@ public class UserControllerTest {
     }
 
     @Test
-    void UpdateUserStatus200Test() throws Exception {
+    void updateUserStatus200Test() throws Exception {
         Long userId = 1L;
         UserDto userDto = new UserDto("user1", "user1@domen.ru");
         User user = new User(userId, "user1", "user1@domen.ru", null, null, null);
-
         when(service.updateUser(userDto, userId))
                 .thenReturn(Optional.of(user));
         mockMvc.perform(patch("/users/{id}", userId)
@@ -85,12 +84,10 @@ public class UserControllerTest {
     }
 
     @Test
-    public void FindUserByIdStatus200Test() throws Exception {
+    public void findUserByIdStatus200Test() throws Exception {
         Long userId = 1L;
         User user = new User(userId, "user", "user@mail.ru", null, null, null);
-
         when(service.findUserById(userId)).thenReturn(Optional.of(user));
-
         mockMvc.perform(get("/users/{id}", userId)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -98,32 +95,25 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
-
         verify(service, Mockito.times(1)).findUserById(userId);
     }
 
     @Test
-    public void FindUserErrorIdStatus404() throws Exception {
+    public void findUserErrorIdStatus404() throws Exception {
         Long userId = 1L;
-
         when(service.findUserById(userId)).thenReturn(Optional.empty());
-
-
         mockMvc.perform(get("/users/{id}", userId)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-
         verify(service, Mockito.times(1)).findUserById(userId);
     }
 
     @Test
-    public void GetAllUsersStatus200() throws Exception {
+    public void getAllUsersStatus200() throws Exception {
         Long userId = 1L;
         User user = new User(userId, "user", "user@mail.ru", null, null, null);
-
         when(service.getAllUsers()).thenReturn(List.of(user));
-
         mockMvc.perform(get("/users")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -132,20 +122,16 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is(user.getName())))
                 .andExpect(jsonPath("$[0].email", is(user.getEmail())));
-
         verify(service, Mockito.times(1)).getAllUsers();
     }
 
     @Test
-    public void DeleteUserByIdStatus200() throws Exception {
-
+    public void deleteUserByIdStatus200() throws Exception {
         when(service.deleteUserById(1L)).thenReturn(true);
-
         mockMvc.perform(delete("/users/{id}", 1L)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
         verify(service, Mockito.times(1)).deleteUserById(1L);
     }
 }

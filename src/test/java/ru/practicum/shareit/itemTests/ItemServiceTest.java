@@ -13,7 +13,6 @@ import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoAnswer;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
@@ -61,23 +60,21 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void CreateItem() throws NotFoundEx {
+    public void createItemTest() throws NotFoundEx {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Long userId = 1L;
-
         Mockito.doNothing().when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
-
         Assertions.assertEquals("Молоток", itemService.create(itemDto, userId).get().getName());
     }
 
     @Test
-    public void CreateItemWrongUserId() throws NotFoundEx {
+    public void createItemWrongUserId() throws NotFoundEx {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -93,7 +90,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void UpdateItem() throws NotFoundEx {
+    public void updateItem() throws NotFoundEx {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -114,7 +111,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void UpdateItemWrongUserId() throws NotFoundEx {
+    public void updateItemWrongUserId() throws NotFoundEx {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -127,7 +124,6 @@ public class ItemServiceTest {
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
-
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemDto.setName("топор");
         Assertions.assertThrows(NotFoundEx.class,
@@ -135,7 +131,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void UpdateItemWrongItem() throws NotFoundEx {
+    public void updateItemWrongItem() throws NotFoundEx {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -148,7 +144,6 @@ public class ItemServiceTest {
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
-
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemDto.setName("топор");
         Assertions.assertThrows(NotFoundEx.class,
@@ -156,13 +151,10 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void FindByItemTest() throws NotFoundEx {
-        ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
+    public void findByItemTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
-        Long userId = 1L;
-
         Mockito.doNothing().when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
@@ -173,32 +165,23 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void FindByItemWrongItemTest() throws NotFoundEx {
-        ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
+    public void findByItemWrongItemTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
-        Long userId = 1L;
-
         Mockito.doNothing().when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
-
         Assertions.assertEquals(Optional.empty(), itemService.findItemById(1L, 1L));
     }
 
     @Test
-    public void GetItemsByOwner() throws NotFoundEx, IllegalArgumentEx {
-        ItemDtoAnswer itemDtoAnswer = new ItemDtoAnswer(1L, "Молоток", "кривой", true, 1L,
-                null, null, null);
-
-        User user = new User(1L, "name", "email@dffd.ru", null,
-                null, null);
+    public void getItemsByOwner() throws NotFoundEx, IllegalArgumentEx {
+        User user = new User(1L, "name", "email@dffd.ru", null, null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Comment comment = new Comment(1L, "sdsd", item, user, LocalDateTime.now());
-        Long userId = 1L;
         Mockito.doNothing().when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItem(anyLong());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
@@ -210,32 +193,27 @@ public class ItemServiceTest {
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
-
         when(itemRepositoryJpa.save(any())).thenReturn(item);
-
         Assertions.assertEquals("Молоток", itemService.getItemsByOwner(1L, 0, 10).get(0)
                 .getName());
     }
 
     @Test
-    public void SearchTest() throws NotFoundEx, IllegalArgumentEx {
+    public void searchTest() throws IllegalArgumentEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
         when(itemRepositoryJpa.search(anyString(), any())).thenReturn(new PageImpl<>(List.of(item)));
-
         Assertions.assertEquals("Молоток", itemService.search("молот", 0, 10).get(0).getName());
     }
 
     @Test
-    public void CreateCommentTest() throws NotFoundEx, IllegalArgumentEx {
-
+    public void createCommentTest() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Comment comment = new Comment(1L, "комментарий", item, user, LocalDateTime.now());
-        Long userId = 1L;
         Mockito.doNothing().when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItem(anyLong());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
@@ -247,21 +225,17 @@ public class ItemServiceTest {
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
         Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
-
         when(itemRepositoryJpa.save(any())).thenReturn(item);
-
         Assertions.assertEquals("комментарий", itemService.getItemsByOwner(1L, 0, 10).get(0)
                 .getComments().stream().collect(Collectors.toList()).get(0).getText());
     }
 
     @Test
-    public void CreateCommentWrongUser() throws NotFoundEx, IllegalArgumentEx {
-
+    public void createCommentWrongUser() throws NotFoundEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Comment comment = new Comment(1L, "комментарий", item, user, LocalDateTime.now());
-        Long userId = 1L;
         Mockito.doThrow(new NotFoundEx("")).when(validation).validateUser(anyLong());
         Mockito.doNothing().when(validation).validateItem(anyLong());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));

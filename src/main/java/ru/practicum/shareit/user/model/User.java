@@ -53,6 +53,7 @@ public class User implements Serializable {
         this.itemRequests = itemRequests;
         this.bookings = bookings;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
