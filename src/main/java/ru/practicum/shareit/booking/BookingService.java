@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 
-
 import java.util.List;
 
 public interface BookingService {
@@ -18,9 +17,11 @@ public interface BookingService {
 
     BookingDtoAnswer getBookingById(Long userId, Long bookingId) throws NotFoundEx;
 
-    List<BookingDtoAnswer> getUserBookings(Long userId, String state) throws NotFoundEx, IllegalArgumentEx;
+    List<BookingDtoAnswer> getUserBookings(Long userId, String state, int from, int size) throws NotFoundEx
+            , IllegalArgumentEx;
 
-    List<BookingDtoAnswer> getItemsBookings(Long userId, String state) throws NotFoundEx, IllegalArgumentEx;
+    List<BookingDtoAnswer> getItemsBookings(Long userId, String state, int from, int size) throws NotFoundEx
+            , IllegalArgumentEx;
 
     @Transactional(readOnly = true)
     Booking getItemLastBookings(Long itemId, Long ownerId);

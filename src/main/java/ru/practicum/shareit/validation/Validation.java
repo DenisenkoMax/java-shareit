@@ -41,7 +41,7 @@ public class Validation {
             throw new NotFoundEx("User is not booker");
     }
 
-    public void validateUser(long userId) throws NotFoundEx {
+    public void validateUser(Long userId) throws NotFoundEx {
         if (!userRepository.findById(userId).isPresent()) {
             throw new NotFoundEx("User not found");
         }
@@ -80,6 +80,19 @@ public class Validation {
     public void validateBookerIsOwner(Item item, long userId) throws NotFoundEx {
         if (item.getOwner().getId() == userId) {
             throw new NotFoundEx("the owner cannot book his item");
+        }
+    }
+
+    public void validatePagination(int size, int from) throws IllegalArgumentEx {
+        if (from < 0) {
+            throw new IllegalArgumentEx("Argument from incorrect");
+        } else if (size <= 0) {
+            throw new IllegalArgumentEx("Argument size incorrect");
+        }
+    }
+    public void validateRequester(long userId) {
+        if (!userRepository.findById(userId).isPresent()) {
+            throw new ValidationException("User was not found");
         }
     }
 }

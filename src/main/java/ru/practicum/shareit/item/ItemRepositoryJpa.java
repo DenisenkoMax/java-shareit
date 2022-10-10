@@ -1,11 +1,11 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
-
-import java.util.List;
 
 @Repository
 public interface ItemRepositoryJpa extends JpaRepository<Item, Long> {
@@ -14,10 +14,10 @@ public interface ItemRepositoryJpa extends JpaRepository<Item, Long> {
             " or upper(i.description) like upper(concat('%', ?1, '%')))" +
             " and i.available = true"
     )
-    List<Item> search(String text);
+    Page<Item> search(String text, Pageable pageable);
 
     @Query(" select i from Item i " +
             "where upper(i.owner.id) like upper(?1) ")
-    List<Item> getItemsByOwner(long userId);
+    Page<Item> getItemsByOwner(long userId, Pageable pageable);
 
 }

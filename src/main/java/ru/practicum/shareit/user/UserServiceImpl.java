@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-
         return Optional.ofNullable(repository.save(user));
     }
 

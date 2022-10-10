@@ -9,11 +9,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @Builder
 public class ItemDto {
-    public ItemDto(Long id, String name, String description, Boolean available) {
+    public ItemDto(Long id, String name, String description, Boolean available, Long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
+        this.requestId = requestId;
     }
 
     private Long id;
@@ -25,4 +26,5 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    private Long requestId;
 }

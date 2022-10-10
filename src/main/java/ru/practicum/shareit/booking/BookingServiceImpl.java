@@ -1,6 +1,9 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -76,28 +79,34 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookingDtoAnswer> getUserBookings(Long userId, String state) throws NotFoundEx, IllegalArgumentEx {
+    public List<BookingDtoAnswer> getUserBookings(Long userId, String state, int from, int size)
+            throws NotFoundEx, IllegalArgumentEx {
 
         validation.validateUser(userId);
+        validation.validatePagination(size, from);
         List<Booking> bookings = new ArrayList<>();
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
         switch (state) {
             case "ALL":
-                bookings = bookingRepository.findBookingsByUser(userId);
+                bookings = bookingRepository.findBookingsByUser(userId, pageable)
+                        .getContent();
                 break;
             case "WAITING":
-                bookings = bookingRepository.findBookingsByUserAndStatus(userId, BookingStatus.WAITING);
+                bookings = bookingRepository.findBookingsByUserAndStatus(userId, BookingStatus.WAITING, pageable)
+                        .getContent();
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findBookingsByUserAndStatus(userId, BookingStatus.REJECTED);
+                bookings = bookingRepository.findBookingsByUserAndStatus(userId, BookingStatus.REJECTED, pageable)
+                        .getContent();
                 break;
             case "PAST":
-                bookings = bookingRepository.findPastBookingsByUser(userId);
+                bookings = bookingRepository.findPastBookingsByUser(userId, pageable).getContent();
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findFutureBookingsByUser(userId);
+                bookings = bookingRepository.findFutureBookingsByUser(userId, pageable).getContent();
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findCurrentBookingsByUser(userId);
+                bookings = bookingRepository.findCurrentBookingsByUser(userId, pageable).getContent();
                 break;
             default:
                 throw new IllegalArgumentEx("Unknown state: UNSUPPORTED_STATUS");
@@ -109,27 +118,35 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookingDtoAnswer> getItemsBookings(Long userId, String state) throws NotFoundEx, IllegalArgumentEx {
+    public List<BookingDtoAnswer> getItemsBookings(Long userId, String state, int from, int size)
+            throws NotFoundEx, IllegalArgumentEx {
         validation.validateUser(userId);
+        validation.validatePagination(size, from);
         List<Booking> bookings = new ArrayList<>();
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
         switch (state) {
             case "ALL":
-                bookings = bookingRepository.findItemBookingsByUser(userId);
+                bookings = bookingRepository.findItemBookingsByUser(userId, pageable).getContent();
                 break;
             case "WAITING":
-                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, BookingStatus.WAITING);
+                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, BookingStatus.WAITING, pageable)
+                        .getContent();
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, BookingStatus.REJECTED);
+                bookings = bookingRepository.findItemBookingsByUserAndStatus(userId, BookingStatus.REJECTED, pageable)
+                        .getContent();
                 break;
             case "PAST":
-                bookings = bookingRepository.findPastItemBookingsByUser(userId);
+                bookings = bookingRepository.findPastItemBookingsByUser(userId, pageable)
+                        .getContent();
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findFutureItemBookingsByUser(userId);
+                bookings = bookingRepository.findFutureItemBookingsByUser(userId, pageable)
+                        .getContent();
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findCurrentItemBookingsByUser(userId);
+                bookings = bookingRepository.findCurrentItemBookingsByUser(userId, pageable)
+                        .getContent();
                 break;
             default:
                 throw new IllegalArgumentEx("Unknown state: UNSUPPORTED_STATUS");
@@ -137,7 +154,6 @@ public class BookingServiceImpl implements BookingService {
         return bookings.stream()
                 .map(p -> BookingMapper.toBookingDtoAnswer(p))
                 .collect(Collectors.toList());
-
     }
 
     @Transactional(readOnly = true)

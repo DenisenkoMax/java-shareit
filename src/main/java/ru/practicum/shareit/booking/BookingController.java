@@ -19,6 +19,8 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
+    private static final String FIRST_ELEMENT = "0";
+    private static final String PAGE_SIZE = "10";
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookingDto> createBooking(@Valid @RequestBody BookingDto bookingDto,
@@ -43,16 +45,22 @@ public class BookingController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<BookingDtoAnswer>> getUserBookings(@RequestParam(defaultValue = "ALL") String state,
+    public ResponseEntity<List<BookingDtoAnswer>> getUserBookings(
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
+            @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size,
                                                                   @RequestHeader("X-Sharer-User-Id") Long userId)
             throws NotFoundEx, IllegalArgumentEx {
-        return new ResponseEntity<>(bookingService.getUserBookings(userId, state), HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.getUserBookings(userId, state,from,size), HttpStatus.OK);
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<List<BookingDtoAnswer>> getAllItemsBookings(@RequestParam(defaultValue = "ALL") String state,
+    public ResponseEntity<List<BookingDtoAnswer>> getAllItemsBookings(
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
+            @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size,
                                                                       @RequestHeader("X-Sharer-User-Id") Long userId)
             throws IllegalArgumentEx, NotFoundEx {
-        return new ResponseEntity<>(bookingService.getItemsBookings(userId, state), HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.getItemsBookings(userId, state, from, size), HttpStatus.OK);
     }
 }

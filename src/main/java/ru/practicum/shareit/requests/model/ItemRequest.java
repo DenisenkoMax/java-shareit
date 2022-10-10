@@ -1,14 +1,14 @@
 package ru.practicum.shareit.requests.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "requests")
@@ -16,6 +16,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class ItemRequest implements Serializable {
+    public ItemRequest(Long id, String description, User requestor, LocalDateTime created, Set<Item> items) {
+        this.id = id;
+        this.description = description;
+        this.requestor = requestor;
+        this.created = created;
+        this.items = items;
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,11 +34,9 @@ public class ItemRequest implements Serializable {
     private User requestor;
     @Column(name = "created")
     private LocalDateTime created;
+    @OneToMany(mappedBy = "request")
+    @ToString.Exclude
+    private Set<Item> items = new HashSet<>();
 
-    public ItemRequest(Long id, String description, User requestor, LocalDateTime created) {
-        this.id = id;
-        this.description = description;
-        this.requestor = requestor;
-        this.created = created;
-    }
+
 }
