@@ -138,8 +138,8 @@ public class ItemRequestControllerTests {
         Long userId = 1L;
         LocalDateTime time = LocalDateTime.now();
         ItemDto itemDto = new ItemDto(1L, "name", "text", true, 1L);
-        ItemRequestDtoAnswer itemRequestDtoAnswer = new ItemRequestDtoAnswer(1L, "text", time
-                , Set.of(itemDto));
+        ItemRequestDtoAnswer itemRequestDtoAnswer = new ItemRequestDtoAnswer(1L, "text", time,
+                Set.of(itemDto));
         when(service.findUserOwnerItemRequests(userId, 0, 10)).thenReturn(List.of(itemRequestDtoAnswer));
         mockMvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", userId)
@@ -160,8 +160,8 @@ public class ItemRequestControllerTests {
         Long userId = 1L;
         LocalDateTime time = LocalDateTime.now();
         ItemDto itemDto = new ItemDto(1L, "name", "text", true, 1L);
-        ItemRequestDtoAnswer itemRequestDtoAnswer = new ItemRequestDtoAnswer(1L, "text", time
-                , Set.of(itemDto));
+        ItemRequestDtoAnswer itemRequestDtoAnswer = new ItemRequestDtoAnswer(1L, "text", time,
+                Set.of(itemDto));
         when(service.findUserOwnerItemRequests(userId, 0, 10)).thenReturn(List.of(itemRequestDtoAnswer));
         mockMvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", userId)
@@ -180,8 +180,8 @@ public class ItemRequestControllerTests {
         Long userId = 1L;
         LocalDateTime time = LocalDateTime.now();
         ItemDto itemDto = new ItemDto(1L, "name", "text", true, 1L);
-        ItemRequestDtoAnswer itemRequestDtoAnswer = new ItemRequestDtoAnswer(1L, "text", time
-                , Set.of(itemDto));
+        ItemRequestDtoAnswer itemRequestDtoAnswer = new ItemRequestDtoAnswer(1L, "text", time,
+                Set.of(itemDto));
         when(service.findAnotherUsersItemRequests(userId, 0, 10)).thenReturn(List.of(itemRequestDtoAnswer));
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", userId)

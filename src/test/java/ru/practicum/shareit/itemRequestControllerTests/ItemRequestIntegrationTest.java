@@ -59,17 +59,17 @@ public class ItemRequestIntegrationTest {
 
     @Test
     public void findUserOwnerItemRequests() throws NotFoundEx, IllegalArgumentEx {
-        Assertions.assertEquals(itemRequest.getDescription(), itemRequestService.
-                findUserOwnerItemRequests(user.getId(), 0, 10).get(1).getDescription());
-        Assertions.assertEquals(itemRequest2.getDescription(), itemRequestService.
-                findUserOwnerItemRequests(user.getId(), 0, 10).get(0).getDescription());
+        Assertions.assertEquals(itemRequest.getDescription(), itemRequestService
+                .findUserOwnerItemRequests(user.getId(), 0, 10).get(1).getDescription());
+        Assertions.assertEquals(itemRequest2.getDescription(), itemRequestService
+                .findUserOwnerItemRequests(user.getId(), 0, 10).get(0).getDescription());
     }
 
     @Test
     public void findAnotherUsersItemRequests() throws NotFoundEx, IllegalArgumentEx {
-        Assertions.assertEquals(itemRequest.getDescription(), itemRequestService.
-                findAnotherUsersItemRequests(user2.getId(), 0, 10).get(1).getDescription());
-        Assertions.assertEquals(itemRequest2.getDescription(), itemRequestService.
-                findAnotherUsersItemRequests(user2.getId(), 0, 10).get(0).getDescription());
+        Assertions.assertEquals(itemRequest.getDescription(), itemRequestService
+                .findAnotherUsersItemRequests(user2.getId(), 0, 10).get(1).getDescription());
+        Assertions.assertEquals(itemRequest2.getDescription(), itemRequestService
+                .findAnotherUsersItemRequests(user2.getId(), 0, 10).get(0).getDescription());
     }
 }

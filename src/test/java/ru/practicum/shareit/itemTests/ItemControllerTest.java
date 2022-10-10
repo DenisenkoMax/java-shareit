@@ -131,7 +131,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void UpdateItemNoUserAuthStatus400() throws Exception {
+    public void updateItemNoUserAuthStatus400() throws Exception {
         ItemDto itemDto = new ItemDto(null, "item1", "", true, null);
 
         mockMvc.perform(patch("/items/{id}", 1)
@@ -262,7 +262,7 @@ public class ItemControllerTest {
         Long itemId = 1L;
         CommentDto commentDto = new CommentDto(null, "text", null, "author",
                 null);
-        CommentDto commentDtoAnswer = new CommentDto(1L, "text", 1l, "author",
+        CommentDto commentDtoAnswer = new CommentDto(1L, "text", 1L, "author",
                 LocalDateTime.of(2022, Month.SEPTEMBER, 5, 8, 0));
         when(service.createComment(userId, itemId, commentDto)).thenReturn(commentDtoAnswer);
         mockMvc.perform(post("/items/{itemId}/comment", itemId)

@@ -19,7 +19,6 @@ import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepositoryJpa;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepositoryJpa;

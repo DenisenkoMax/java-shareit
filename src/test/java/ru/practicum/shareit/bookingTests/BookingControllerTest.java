@@ -50,8 +50,7 @@ public class BookingControllerTest {
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         ItemDto itemDto = new ItemDto(1L, "name", "desc", true, 1L);
         UserDtoAnswer userDtoAnswer = new UserDtoAnswer(userId, "user", "user@user.ru");
-        BookingDto bookingDtoAnswer = new BookingDto
-                (1L, start, end, 1L, 1L, BookingStatus.WAITING);
+        BookingDto bookingDtoAnswer = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
 
         when(service.create(bookingDto, userId)).thenReturn(bookingDtoAnswer);
 
@@ -185,7 +184,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void GetAllUserBookingsStatus200() throws Exception {
+    public void getAllUserBookingsStatus200() throws Exception {
         Long userId = 1L;
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);

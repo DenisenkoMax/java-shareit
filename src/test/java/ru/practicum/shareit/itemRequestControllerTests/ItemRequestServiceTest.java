@@ -92,8 +92,8 @@ public class ItemRequestServiceTest {
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
         Mockito.doNothing().when(validation).validateRequester(anyLong());
         Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
-        when(itemRequestRepositoryJpa.findItemRequestsByUser(anyLong(), any())).
-                thenReturn(new PageImpl<>(List.of(itemRequest)));
+        when(itemRequestRepositoryJpa.findItemRequestsByUser(anyLong(), any()))
+                .thenReturn(new PageImpl<>(List.of(itemRequest)));
         Assertions.assertEquals("text", itemRequestService.findUserOwnerItemRequests(2L, 0, 10)
                 .get(0).getDescription());
     }
@@ -105,8 +105,8 @@ public class ItemRequestServiceTest {
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
         Mockito.doNothing().when(validation).validateRequester(anyLong());
         Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
-        when(itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(anyLong(), any())).
-                thenReturn(new PageImpl<>(List.of(itemRequest)));
+        when(itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(anyLong(), any()))
+                .thenReturn(new PageImpl<>(List.of(itemRequest)));
         Assertions.assertEquals("text", itemRequestService.findAnotherUsersItemRequests(1L, 0, 10)
                 .get(0).getDescription());
     }

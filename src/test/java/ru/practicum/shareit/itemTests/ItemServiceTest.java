@@ -107,7 +107,7 @@ public class ItemServiceTest {
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemService.create(itemDto, 1L);
         itemDto.setName("топор");
-        Assertions.assertEquals("топор", itemService.updateItem(itemDto, 1l, userId).get().getName());
+        Assertions.assertEquals("топор", itemService.updateItem(itemDto, 1L, userId).get().getName());
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ItemServiceTest {
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemDto.setName("топор");
         Assertions.assertThrows(NotFoundEx.class,
-                () -> itemService.updateItem(itemDto, 1l, userId));
+                () -> itemService.updateItem(itemDto, 1L, userId));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ItemServiceTest {
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemDto.setName("топор");
         Assertions.assertThrows(NotFoundEx.class,
-                () -> itemService.updateItem(itemDto, 1l, userId));
+                () -> itemService.updateItem(itemDto, 1L, userId));
     }
 
     @Test

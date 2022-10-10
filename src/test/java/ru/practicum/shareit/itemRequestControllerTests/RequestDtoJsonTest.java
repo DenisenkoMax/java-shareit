@@ -15,6 +15,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 public class RequestDtoJsonTest {
     @Autowired
     private JacksonTester<ItemRequestDto> jacksonTester;
+
     @Test
     void serializedTest() throws IOException {
         ItemRequestDto itemRequestDto = new ItemRequestDto(1L,"description");
