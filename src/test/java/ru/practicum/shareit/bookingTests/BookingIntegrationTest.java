@@ -78,8 +78,8 @@ public class BookingIntegrationTest {
         entityManager.persist(user2);
         Item item = new Item(null, "Молоток", "кривой", user2, true, null);
         entityManager.persist(item);
-        Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
-                .minusHours(1L), item, user, BookingStatus.APPROVED);
+        Booking booking = new Booking(null, LocalDateTime.now().minusHours(20L), LocalDateTime.now()
+                .minusHours(10L), item, user, BookingStatus.APPROVED);
         entityManager.persist(booking);
         assertThat(item.getId(), equalTo(bookingService.getItemsBookings(user2.getId(), "PAST", 0, 10)
                 .get(0).getId()));
