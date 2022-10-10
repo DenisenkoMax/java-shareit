@@ -69,19 +69,4 @@ public class BookingIntegrationTest {
         assertThat(booking.getId(), equalTo(bookingService.getUserBookings(user2.getId(), "PAST", 0, 10)
                 .get(0).getId()));
     }
-
-    @Test
-    public void getUserItemTest() throws NotFoundEx, IllegalArgumentEx {
-        User user = new User(null, "user", "user@email.ru", null, null, null);
-        entityManager.persist(user);
-        User user2 = new User(null, "user2", "user2@email.ru", null, null, null);
-        entityManager.persist(user2);
-        Item item = new Item(null, "Молоток", "кривой", user2, true, null);
-        entityManager.persist(item);
-        Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
-                .minusHours(1L), item, user, BookingStatus.APPROVED);
-        entityManager.persist(booking);
-        assertThat(item.getId(), equalTo(bookingService.getItemsBookings(user2.getId(), "PAST", 0, 10)
-                .get(0).getId()));
-    }
 }
