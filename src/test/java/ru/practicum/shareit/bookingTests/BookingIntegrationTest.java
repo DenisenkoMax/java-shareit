@@ -76,13 +76,12 @@ public class BookingIntegrationTest {
         entityManager.persist(user);
         User user2 = new User(null, "user2", "user2@email.ru", null, null, null);
         entityManager.persist(user2);
-        Item item = new Item(null, "Молоток", "кривой", user, true, null);
+        Item item = new Item(null, "Молоток", "кривой", user2, true, null);
         entityManager.persist(item);
         Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
-                .minusHours(1L), item, user2, BookingStatus.WAITING);
+                .minusHours(1L), item, user, BookingStatus.APPROVED);
         entityManager.persist(booking);
-        bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
-        assertThat(item.getId(), equalTo(bookingService.getItemsBookings(user.getId(), "PAST", 0, 10)
+        assertThat(item.getId(), equalTo(bookingService.getItemsBookings(user2.getId(), "PAST", 0, 10)
                 .get(0).getId()));
     }
 }
