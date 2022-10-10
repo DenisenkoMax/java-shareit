@@ -42,8 +42,8 @@ public class BookingIntegrationTest {
         entityManager.persist(user2);
         Item item = new Item(null, "Молоток", "кривой", user, true, null);
         entityManager.persist(item);
-        Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
-                .minusHours(1L), item, user2, BookingStatus.WAITING);
+        Booking booking = new Booking(null, LocalDateTime.now().minusHours(5L), LocalDateTime.now()
+                .minusHours(4L), item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
         bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
         Comment comment = new Comment(null, "комментарий", item, user2,
@@ -62,11 +62,27 @@ public class BookingIntegrationTest {
         entityManager.persist(user2);
         Item item = new Item(null, "Молоток", "кривой", user, true, null);
         entityManager.persist(item);
+        Booking booking = new Booking(null, LocalDateTime.now().minusHours(7L), LocalDateTime.now()
+                .minusHours(6L), item, user2, BookingStatus.WAITING);
+        entityManager.persist(booking);
+        bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
+        assertThat(booking.getId(), equalTo(bookingService.getUserBookings(user2.getId(), "PAST", 0, 10)
+                .get(0).getId()));
+    }
+
+    @Test
+    public void getItemsBookingsTest() throws NotFoundEx, IllegalArgumentEx {
+        User user = new User(null, "user", "user@email.ru", null, null, null);
+        entityManager.persist(user);
+        User user2 = new User(null, "user2", "user2@email.ru", null, null, null);
+        entityManager.persist(user2);
+        Item item = new Item(null, "Молоток", "кривой", user, true, null);
+        entityManager.persist(item);
         Booking booking = new Booking(null, LocalDateTime.now().minusHours(2L), LocalDateTime.now()
                 .minusHours(1L), item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
         bookingService.confirmBookingRequest(booking.getId(), user.getId(), true);
-        assertThat(booking.getId(), equalTo(bookingService.getUserBookings(user2.getId(), "PAST", 0, 10)
+        assertThat(booking.getId(), equalTo(bookingService.getItemsBookings(user.getId(), "PAST", 0, 10)
                 .get(0).getId()));
     }
 }
