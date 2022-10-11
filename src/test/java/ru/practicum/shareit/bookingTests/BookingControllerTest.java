@@ -231,28 +231,4 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$[0].booker.id", is(1)));
         verify(service, Mockito.times(1)).getUserBookings(userId, "ALL", 0, 10);
     }
-
-    @Test
-    public void getOwnersBookingsStatus200() throws Exception {
-        Long userId = 1L;
-        LocalDateTime start = LocalDateTime.now().plusDays(1);
-        LocalDateTime end = LocalDateTime.now().plusDays(10);
-        BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
-        ItemDto itemDto = new ItemDto(1L, "name", "desc", true, 1L);
-        UserDtoAnswer userDtoAnswer = new UserDtoAnswer(userId, "user", "user@user.ru");
-        BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end, itemDto, userDtoAnswer,
-                BookingStatus.WAITING);
-        when(service.getItemsBookings(userId, "ALL", 0, 10)).thenReturn(List.of(bookingDtoAnswer));
-        mockMvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", userId)
-                        .param("state", "ALL")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].item.id", is(1)))
-                .andExpect(jsonPath("$[0].booker.id", is(1)));
-        verify(service, Mockito.times(1)).getItemsBookings(userId, "ALL", 0, 10);
-    }
 }
