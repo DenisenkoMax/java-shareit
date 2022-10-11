@@ -57,6 +57,8 @@ public class BookingSeviceTest {
         bookingService = new BookingServiceImpl(bookingRepositoryJpa, userRepositoryJpa, itemRepositoryJpa, validation);
     }
 
+
+
     @Test
     public void createBooking() throws NotFoundEx, IllegalArgumentEx {
         Long userId = 1L;

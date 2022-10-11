@@ -67,7 +67,6 @@ public class ItemServiceTest {
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Long userId = 1L;
         Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         Assertions.assertEquals("Молоток", itemService.create(itemDto, userId).get().getName());
@@ -82,7 +81,7 @@ public class ItemServiceTest {
         Long userId = 1L;
 
         Mockito.doThrow(new NotFoundEx("user not found")).when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         Assertions.assertThrows(NotFoundEx.class,
@@ -102,7 +101,7 @@ public class ItemServiceTest {
         Mockito.doNothing().when(validation).validateItemOwner(any(), anyLong());
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
 
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemService.create(itemDto, 1L);
@@ -123,7 +122,7 @@ public class ItemServiceTest {
         Mockito.doNothing().when(validation).validateItemOwner(any(), anyLong());
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemDto.setName("топор");
         Assertions.assertThrows(NotFoundEx.class,
@@ -143,7 +142,7 @@ public class ItemServiceTest {
         Mockito.doNothing().when(validation).validateItemOwner(any(), anyLong());
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         itemDto.setName("топор");
         Assertions.assertThrows(NotFoundEx.class,
@@ -156,7 +155,7 @@ public class ItemServiceTest {
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
@@ -170,7 +169,7 @@ public class ItemServiceTest {
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
         Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
@@ -192,7 +191,7 @@ public class ItemServiceTest {
         when(bookingService.getItemLastBookings(anyLong(), anyLong())).thenReturn(null);
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         Assertions.assertEquals("Молоток", itemService.getItemsByOwner(1L, 0, 10).get(0)
                 .getName());
@@ -224,7 +223,7 @@ public class ItemServiceTest {
         when(bookingService.getItemLastBookings(anyLong(), anyLong())).thenReturn(null);
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         Assertions.assertEquals("комментарий", itemService.getItemsByOwner(1L, 0, 10).get(0)
                 .getComments().stream().collect(Collectors.toList()).get(0).getText());
@@ -246,7 +245,7 @@ public class ItemServiceTest {
         when(bookingService.getItemLastBookings(anyLong(), anyLong())).thenReturn(null);
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
-        Mockito.doNothing().when(validation).validateItemDtoParametrs(any());
+        
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         Assertions.assertThrows(NotFoundEx.class,
                 () -> itemService.getItemsByOwner(1L, 0, 10));

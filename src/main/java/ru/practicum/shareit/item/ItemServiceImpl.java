@@ -41,7 +41,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Optional<ItemDto> create(ItemDto itemDto, long userId) throws NotFoundEx {
         validation.validateUser(userId);
-        validation.validateItemDtoParametrs(itemDto);
 
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.findById(userId).get());
