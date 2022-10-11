@@ -159,14 +159,27 @@ public class ItemServiceTest {
     }
 
     @Test
+    public void findItemByUserIdUserIsNotOwner() throws NotFoundEx {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        Item item = new Item(1L, "Молоток", "кривой", user, true, null);
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.save(any())).thenReturn(item);
+        Assertions.assertEquals(item.getName(),
+                itemService.findItemById(2L, 1L).get().getName());
+    }
+
+    @Test
     public void getItemsByOwner() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(1L, "name", "email@dffd.ru", null, null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
+        Item item2 = new Item(2L, "Молоток2", "кривой2", user, true, null);
         Comment comment = new Comment(1L, "sdsd", item, user, LocalDateTime.now());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        when(itemRepositoryJpa.getItemsByOwner(anyLong(), any())).thenReturn(new PageImpl<>(List.of(item)));
+        when(itemRepositoryJpa.getItemsByOwner(anyLong(), any())).thenReturn(new PageImpl<>(List.of(item,item2)));
         when(bookingService.getItemLastBookings(anyLong(), anyLong())).thenReturn(null);
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
