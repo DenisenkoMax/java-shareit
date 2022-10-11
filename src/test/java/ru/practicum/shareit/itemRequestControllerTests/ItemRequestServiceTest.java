@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.BookingRepositoryJpa;
 import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.ItemRepositoryJpa;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
 import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.requests.ItemRequestServiceImpl;
@@ -23,6 +24,7 @@ import ru.practicum.shareit.validation.Validation;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -98,9 +100,11 @@ public class ItemRequestServiceTest {
         User user = new User(2L, "name", "email@dffd.ru", null,
                 null, null);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L,"Вещь","новая",user,true,null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), Set.of(item));
         when(itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
+        Assertions.assertEquals(item.hashCode(),item.hashCode());
         Assertions.assertEquals("text", itemRequestService.findAnotherUsersItemRequests(1L,
                 0, 10).get(0).getDescription());
     }

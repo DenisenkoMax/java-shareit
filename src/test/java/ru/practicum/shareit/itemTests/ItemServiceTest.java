@@ -179,13 +179,13 @@ public class ItemServiceTest {
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        when(itemRepositoryJpa.getItemsByOwner(anyLong(), any())).thenReturn(new PageImpl<>(List.of(item,item2)));
+        when(itemRepositoryJpa.getItemsByOwner(anyLong(), any())).thenReturn(new PageImpl<>(List.of(item, item2)));
         when(bookingService.getItemLastBookings(anyLong(), anyLong())).thenReturn(null);
         when(bookingService.getItemNextBookings(anyLong(), anyLong())).thenReturn(null);
         when(commentRepository.findByItem(anyLong())).thenReturn(List.of(comment));
         when(itemRepositoryJpa.save(any())).thenReturn(item);
-        Assertions.assertEquals("Молоток", itemService.getItemsByOwner(1L, 0, 10).get(0)
-                .getName());
+        Assertions.assertEquals(comment.getId(), itemService.getItemsByOwner(1L, 0, 10).get(0)
+                .getComments().stream().collect(Collectors.toList()).get(0).getId());
     }
 
     @Test

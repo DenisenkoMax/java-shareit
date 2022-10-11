@@ -65,6 +65,25 @@ public class BookingSeviceTest {
     }
 
     @Test
+    public void createBookingItemDatesIsBusy() {
+        Long userId = 1L;
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
+        when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(true);
+        Assertions.assertThrows(NotFoundEx.class,
+                () -> bookingService.create(bookingDto, userId));
+    }
+
+    @Test
     public void createBookingWrongUser() {
         Long userId = 1L;
         User user = new User(1L, "name", "email@dffd.ru", null,
@@ -111,8 +130,8 @@ public class BookingSeviceTest {
         Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
-        BookingDto bookingDto = new BookingDto(1L, start,end, 1L, 1L, BookingStatus.WAITING);
-        Booking booking = new Booking(1L, start,end, item, user, BookingStatus.WAITING);
+        BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
         when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
@@ -156,6 +175,44 @@ public class BookingSeviceTest {
         when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.confirmBookingRequest(1L, 1L, true)
                 .getStatus());
+    }
+
+    @Test
+    public void confirmBookingRequestSetFalseTest() throws NotFoundEx, IllegalArgumentEx {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
+        BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end,
+                ItemMapper.toItemDto(item), UserMapper.toUserDtoAnswer(user), BookingStatus.REJECTED);
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.confirmBookingRequest(1L,
+                1L, false).getStatus());
+    }
+
+    @Test
+    public void confirmBookingRequestAlredyAvailableTest() throws NotFoundEx, IllegalArgumentEx {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.APPROVED);
+        BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end,
+                ItemMapper.toItemDto(item), UserMapper.toUserDtoAnswer(user), BookingStatus.APPROVED);
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertThrows(IllegalArgumentEx.class,
+                () -> bookingService.confirmBookingRequest(1L, 1L, true));
     }
 
     @Test
