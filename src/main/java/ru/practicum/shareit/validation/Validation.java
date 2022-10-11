@@ -11,8 +11,6 @@ import ru.practicum.shareit.item.ItemRepositoryJpa;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepositoryJpa;
 
-import javax.validation.ValidationException;
-
 @Service
 @RequiredArgsConstructor
 public class Validation {
