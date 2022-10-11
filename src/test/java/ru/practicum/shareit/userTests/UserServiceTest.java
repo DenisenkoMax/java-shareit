@@ -30,10 +30,8 @@ public class UserServiceTest {
     private final UserRepositoryJpa userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
     @Mock
     private final ItemRepositoryJpa itemRepositoryJpa = Mockito.mock(ItemRepositoryJpa.class);
-    ;
     @Mock
     private final BookingRepositoryJpa bookingRepositoryJpa = Mockito.mock(BookingRepositoryJpa.class);
-    ;
     private final Validation validation = new Validation(userRepositoryJpa, itemRepositoryJpa, bookingRepositoryJpa);
     private UserService userService = new UserServiceImpl(userRepositoryJpa, validation);
 
