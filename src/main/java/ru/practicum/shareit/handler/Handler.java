@@ -22,7 +22,6 @@ public class Handler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new Handler.ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @Data
     private class ErrorResponse {
         @JsonProperty("error")
         private String error;

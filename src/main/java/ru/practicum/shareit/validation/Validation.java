@@ -78,10 +78,4 @@ public class Validation {
             throw new IllegalArgumentEx("Argument size incorrect");
         }
     }
-
-    public void validateRequester(long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
-            throw new ValidationException("User was not found");
-        }
-    }
 }

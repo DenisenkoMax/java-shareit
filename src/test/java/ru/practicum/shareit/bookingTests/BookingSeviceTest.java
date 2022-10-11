@@ -2,7 +2,6 @@ package ru.practicum.shareit.bookingTests;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @Transactional
@@ -38,25 +36,14 @@ import static org.mockito.Mockito.when;
 
 public class BookingSeviceTest {
     @Mock
-    private BookingRepositoryJpa bookingRepositoryJpa;
+    private BookingRepositoryJpa bookingRepositoryJpa = Mockito.mock(BookingRepositoryJpa.class);
     @Mock
-    private UserRepositoryJpa userRepositoryJpa;
+    private UserRepositoryJpa userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
     @Mock
-    private ItemRepositoryJpa itemRepositoryJpa;
-    @Mock
-    private Validation validation;
-    private BookingServiceImpl bookingService;
-
-    @BeforeEach
-    public void before() {
-        bookingRepositoryJpa = Mockito.mock(BookingRepositoryJpa.class);
-        userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
-        itemRepositoryJpa = Mockito.mock(ItemRepositoryJpa.class);
-        validation = Mockito.mock(Validation.class);
-        bookingService = new BookingServiceImpl(bookingRepositoryJpa, userRepositoryJpa, itemRepositoryJpa, validation);
-    }
-
-
+    private ItemRepositoryJpa itemRepositoryJpa = Mockito.mock(ItemRepositoryJpa.class);
+    private final Validation validation = new Validation(userRepositoryJpa, itemRepositoryJpa, bookingRepositoryJpa);
+    private final BookingServiceImpl bookingService = new BookingServiceImpl(bookingRepositoryJpa,
+            userRepositoryJpa, itemRepositoryJpa, validation);
 
     @Test
     public void createBooking() throws NotFoundEx, IllegalArgumentEx {
@@ -69,21 +56,16 @@ public class BookingSeviceTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validateItem(anyLong());
-        Mockito.doNothing().when(validation).validateItemAvailable(anyLong());
-        Mockito.doNothing().when(validation).validateBookingDate(any());
         when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
-        Mockito.doNothing().when(validation).validateBookerIsOwner(any(), anyLong());
         when(bookingRepositoryJpa.save(any())).thenReturn(booking);
-        Assertions.assertEquals(item.getId(), bookingService.create(bookingDto, userId)
+        Assertions.assertEquals(item.getId(), bookingService.create(bookingDto, 2L)
                 .getItemId());
     }
 
     @Test
-    public void createBookingWrongUser() throws NotFoundEx, IllegalArgumentEx {
+    public void createBookingWrongUser() {
         Long userId = 1L;
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -93,17 +75,68 @@ public class BookingSeviceTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doThrow(new NotFoundEx("")).when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validateItem(anyLong());
-        Mockito.doNothing().when(validation).validateItemAvailable(anyLong());
-        Mockito.doNothing().when(validation).validateBookingDate(any());
         when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
-        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
-        Mockito.doNothing().when(validation).validateBookerIsOwner(any(), anyLong());
         when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertThrows(NotFoundEx.class,
                 () -> bookingService.create(bookingDto, userId));
+    }
+
+    @Test
+    public void createBookingWrongDate() {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        BookingDto bookingDto = new BookingDto(1L, end, start, 1L, 1L, BookingStatus.WAITING);
+        Booking booking = new Booking(1L, end, start, item, user, BookingStatus.WAITING);
+        when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertThrows(IllegalArgumentEx.class,
+                () -> bookingService.create(bookingDto, 2L));
+    }
+
+    @Test
+    public void createBookingUserIsNotOwner() {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        User user2 = new User(2L, "name2", "email2@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        BookingDto bookingDto = new BookingDto(1L, start,end, 1L, 1L, BookingStatus.WAITING);
+        Booking booking = new Booking(1L, start,end, item, user, BookingStatus.WAITING);
+        when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertThrows(NotFoundEx.class,
+                () -> bookingService.create(bookingDto, 1L));
+    }
+
+    @Test
+    public void createBookingNotAvailable() {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, false, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
+        when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertThrows(IllegalArgumentEx.class,
+                () -> bookingService.create(bookingDto, 2L));
     }
 
     @Test
@@ -117,12 +150,29 @@ public class BookingSeviceTest {
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
         BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end,
                 ItemMapper.toItemDto(item), UserMapper.toUserDtoAnswer(user), BookingStatus.APPROVED);
-        Mockito.doNothing().when(validation).validateBooking(anyLong());
-        Mockito.doNothing().when(validation).validateUser(anyLong());
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
-        Mockito.doNothing().when(validation).validateItemOwner(any(), anyLong());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.confirmBookingRequest(1L, 1L, true)
                 .getStatus());
+    }
+
+    @Test
+    public void confirmBookingRequestUserIsNotItemsOwnerTest() {
+        User user = new User(1L, "name", "email@dffd.ru", null,
+                null, null);
+        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
+        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        LocalDateTime start = LocalDateTime.now().plusDays(1);
+        LocalDateTime end = LocalDateTime.now().plusDays(10);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertThrows(NotFoundEx.class,
+                () -> bookingService.confirmBookingRequest(1L, 2L, true));
     }
 
     @Test
@@ -133,36 +183,38 @@ public class BookingSeviceTest {
         Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
-        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
+        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.APPROVED);
         BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end,
                 ItemMapper.toItemDto(item), UserMapper.toUserDtoAnswer(user), BookingStatus.APPROVED);
-        Mockito.doNothing().when(validation).validateBooking(anyLong());
-        Mockito.doNothing().when(validation).validateUser(anyLong());
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
-        Mockito.doNothing().when(validation).validateBookerIsOwner(item, 1L);
-        Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.confirmBookingRequest(1L, 1L, true)
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
+        Assertions.assertEquals(bookingDtoAnswer.getStatus(), bookingService.getBookingById(1L, 1L)
                 .getStatus());
     }
 
     @Test
-    public void getBookingByIdWrongUserTest() throws NotFoundEx, IllegalArgumentEx {
+    public void getBookingByIdUserIsNotBookerOrOwnerTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
+        User user2 = new User(2L, "name2", "email2@dffd.ru", null,
+                null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
+        Item item = new Item(1L, "Молоток", "пластиковый", user2, true, itemRequest);
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
-        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateBooking(anyLong());
-        Mockito.doThrow(new NotFoundEx("")).when(validation).validateUser(anyLong());
+        Booking booking = new Booking(1L, start, end, item, user2, BookingStatus.WAITING);
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
-        Mockito.doNothing().when(validation).validateBookerIsOwner(item, 1L);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertThrows(NotFoundEx.class,
-                () -> bookingService.confirmBookingRequest(1L, 1L, true));
+                () -> bookingService.getBookingById(1L, 1L));
     }
 
     @Test
-    public void getBookingByIdWrongBookingTest() throws NotFoundEx, IllegalArgumentEx {
+    public void getBookingByIdWrongBookingTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -170,10 +222,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doThrow(new NotFoundEx("")).when(validation).validateBooking(anyLong());
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
-        Mockito.doNothing().when(validation).validateBookerIsOwner(item, 1L);
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertThrows(NotFoundEx.class,
                 () -> bookingService.confirmBookingRequest(1L, 1L, true));
     }
@@ -187,8 +239,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findItemBookingsByUser(anyLong(), any())).thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getItemsBookings(1L, "ALL", 0, 10)
                 .get(0).getId());
@@ -203,8 +257,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findItemBookingsByUserAndStatus(anyLong(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getItemsBookings(1L, "WAITING", 0, 10)
@@ -220,8 +276,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findPastItemBookingsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getItemsBookings(1L, "PAST", 0, 10)
@@ -237,8 +295,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findFutureItemBookingsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getItemsBookings(1L, "FUTURE", 0, 10)
@@ -254,8 +314,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findCurrentItemBookingsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getItemsBookings(1L, "CURRENT", 0, 10)
@@ -263,7 +325,7 @@ public class BookingSeviceTest {
     }
 
     @Test
-    public void findItemBookingsErrorStatusItemBookingsByUserTest() throws NotFoundEx, IllegalArgumentEx {
+    public void findItemBookingsErrorStatusItemBookingsByUserTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -271,8 +333,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertThrows(IllegalArgumentEx.class,
                 () -> bookingService.getItemsBookings(1L, "CUR", 0, 10));
     }
@@ -286,8 +350,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findBookingsByUser(anyLong(), any())).thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getUserBookings(1L, "ALL", 0, 10)
                 .get(0).getId());
@@ -302,8 +368,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findBookingsByUserAndStatus(anyLong(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getUserBookings(1L, "WAITING", 0, 10)
@@ -319,8 +387,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findPastBookingsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getUserBookings(1L, "PAST", 0, 10)
@@ -336,8 +406,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findFutureBookingsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getUserBookings(1L, "FUTURE", 0, 10)
@@ -353,8 +425,10 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         when(bookingRepositoryJpa.findCurrentBookingsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(booking)));
         Assertions.assertEquals(1L, bookingService.getUserBookings(1L, "CURRENT", 0, 10)
@@ -362,15 +436,12 @@ public class BookingSeviceTest {
     }
 
     @Test
-    public void findUserBookingsErrorStatusItemBookingsByUserTest() throws NotFoundEx, IllegalArgumentEx {
+    public void findUserBookingsErrorStatusItemBookingsByUserTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
-        LocalDateTime start = LocalDateTime.now().plusDays(1);
-        LocalDateTime end = LocalDateTime.now().plusDays(10);
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
+        when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         Assertions.assertThrows(IllegalArgumentEx.class,
                 () -> bookingService.getItemsBookings(1L, "CUR", 0, 10));
     }

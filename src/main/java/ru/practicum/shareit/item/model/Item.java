@@ -45,7 +45,7 @@ public class Item implements Serializable {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @ToString.Exclude
-    private final Set<Comment> comments = new HashSet<>();
+    private Set<Comment> comments = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -53,10 +53,5 @@ public class Item implements Serializable {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Item item = (Item) o;
         return id != null && Objects.equals(id, item.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

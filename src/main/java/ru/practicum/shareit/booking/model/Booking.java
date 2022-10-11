@@ -8,11 +8,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode
 @Entity
 @Table(name = "bookings")
 @Data
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Booking  implements Serializable {
     @Id

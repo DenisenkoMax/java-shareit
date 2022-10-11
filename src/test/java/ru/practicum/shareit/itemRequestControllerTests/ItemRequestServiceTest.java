@@ -2,14 +2,15 @@ package ru.practicum.shareit.itemRequestControllerTests;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepositoryJpa;
 import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
+import ru.practicum.shareit.item.ItemRepositoryJpa;
 import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
 import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.requests.ItemRequestServiceImpl;
@@ -30,20 +31,17 @@ import static org.mockito.Mockito.when;
 @RequiredArgsConstructor
 public class ItemRequestServiceTest {
     @Mock
-    private ItemRequestRepositoryJpa itemRequestRepositoryJpa;
+    private ItemRequestRepositoryJpa itemRequestRepositoryJpa = Mockito.mock(ItemRequestRepositoryJpa.class);
     @Mock
-    private UserRepositoryJpa userRepositoryJpa;
+    private UserRepositoryJpa userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
     @Mock
-    private Validation validation;
-    private ItemRequestService itemRequestService;
+    private ItemRepositoryJpa itemRepositoryJpa = Mockito.mock(ItemRepositoryJpa.class);
+    @Mock
+    private BookingRepositoryJpa bookingRepositoryJpa = Mockito.mock(BookingRepositoryJpa.class);
+    private final Validation validation = new Validation(userRepositoryJpa, itemRepositoryJpa, bookingRepositoryJpa);
+    private final ItemRequestService itemRequestService = new ItemRequestServiceImpl(itemRequestRepositoryJpa,
+            userRepositoryJpa, validation);
 
-    @BeforeEach
-    public void before() {
-        itemRequestRepositoryJpa = Mockito.mock(ItemRequestRepositoryJpa.class);
-        userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
-        validation = Mockito.mock(Validation.class);
-        itemRequestService = new ItemRequestServiceImpl(itemRequestRepositoryJpa, userRepositoryJpa, validation);
-    }
 
     @Test
     public void createItemRequest() throws NotFoundEx {
@@ -52,7 +50,7 @@ public class ItemRequestServiceTest {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Mockito.doNothing().when(validation).validateRequester(anyLong());
+        itemRequest.setRequestor(user);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRequestRepositoryJpa.save(any())).thenReturn(itemRequest);
         Assertions.assertEquals("text", itemRequestService.createItemRequest(userId, itemRequestDto)
@@ -60,14 +58,13 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    public void createItemRequestWrongRequester() throws NotFoundEx {
+    public void createItemRequestWrongRequester() {
         Long userId = 1L;
         ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "text");
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Mockito.doThrow(new NotFoundEx("")).when(validation).validateUser(any());
-        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
         when(itemRequestRepositoryJpa.save(any())).thenReturn(itemRequest);
         Assertions.assertThrows(NotFoundEx.class,
                 () -> itemRequestService.createItemRequest(userId, itemRequestDto));
@@ -78,8 +75,8 @@ public class ItemRequestServiceTest {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Mockito.doNothing().when(validation).validateRequester(anyLong());
         when(itemRequestRepositoryJpa.findById(any())).thenReturn(Optional.of(itemRequest));
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         Assertions.assertEquals("text", itemRequestService.findItemRequestById(1L, 1L).get()
                 .getDescription());
     }
@@ -88,9 +85,8 @@ public class ItemRequestServiceTest {
     public void findOwnerUsersItemRequests() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(2L, "name", "email@dffd.ru", null,
                 null, null);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Mockito.doNothing().when(validation).validateRequester(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
         when(itemRequestRepositoryJpa.findItemRequestsByUser(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
         Assertions.assertEquals("text", itemRequestService.findUserOwnerItemRequests(2L, 0, 10)
@@ -101,12 +97,11 @@ public class ItemRequestServiceTest {
     public void findAnotherUsersItemRequests() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(2L, "name", "email@dffd.ru", null,
                 null, null);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
-        Mockito.doNothing().when(validation).validateRequester(anyLong());
-        Mockito.doNothing().when(validation).validatePagination(anyInt(), anyInt());
         when(itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
-        Assertions.assertEquals("text", itemRequestService.findAnotherUsersItemRequests(1L, 0, 10)
-                .get(0).getDescription());
+        Assertions.assertEquals("text", itemRequestService.findAnotherUsersItemRequests(1L,
+                0, 10).get(0).getDescription());
     }
 }
