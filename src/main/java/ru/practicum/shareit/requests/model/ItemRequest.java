@@ -22,6 +22,7 @@ public class ItemRequest implements Serializable {
         this.created = created;
         this.items = items;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

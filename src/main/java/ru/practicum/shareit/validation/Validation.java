@@ -29,6 +29,7 @@ public class Validation {
             throw new NotFoundEx("User is not booker");
     }
 
+
     public void validateUser(Long userId) throws NotFoundEx {
         if (userRepository.findById(userId).isEmpty()) {
             throw new NotFoundEx("User not found");
