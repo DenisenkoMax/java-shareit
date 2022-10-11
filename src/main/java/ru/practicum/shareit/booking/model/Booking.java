@@ -6,7 +6,6 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "bookings")
 @Data
