@@ -44,7 +44,6 @@ public class ItemServiceTest {
     private CommentRepository commentRepository;
     @Mock
     private ItemRequestRepositoryJpa itemRequestRepositoryJpa;
-    @Mock
     private ItemService itemService;
 
     @BeforeEach

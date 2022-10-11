@@ -38,7 +38,7 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void createUserStatust200Test() throws Exception {
+    void createUserStatus200Test() throws Exception {
         UserDto userDto = new UserDto("user1", "user1@domen.ru");
         User user = new User(1L, "user1", "user1@domen.ru", null, null, null);
 

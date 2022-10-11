@@ -45,7 +45,6 @@ public class BookingSeviceTest {
     private ItemRepositoryJpa itemRepositoryJpa;
     @Mock
     private Validation validation;
-    @Mock
     private BookingServiceImpl bookingService;
 
     @BeforeEach

@@ -14,12 +14,12 @@ import ru.practicum.shareit.exception.*;
 
 public class Handler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundEx.class)
-    public ResponseEntity<Object> handleNotFound(NotFoundEx exception, WebRequest request) {
+    public ResponseEntity<Object> handleNotFound(NotFoundEx exception) {
         return new ResponseEntity<>(new Handler.ErrorResponse(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalArgumentEx.class)
-    public ResponseEntity<Object> handleBadRequest(IllegalArgumentEx exception, WebRequest request) {
+    public ResponseEntity<Object> handleBadRequest(IllegalArgumentEx exception) {
         return new ResponseEntity<>(new Handler.ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

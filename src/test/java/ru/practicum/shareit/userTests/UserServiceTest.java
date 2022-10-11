@@ -29,7 +29,6 @@ public class UserServiceTest {
     private UserRepositoryJpa userRepositoryJpa;
     @Mock
     private Validation validation;
-    @Mock
     private UserService userService;
 
     @BeforeEach

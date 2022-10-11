@@ -35,7 +35,6 @@ public class ItemRequestServiceTest {
     private UserRepositoryJpa userRepositoryJpa;
     @Mock
     private Validation validation;
-    @Mock
     private ItemRequestService itemRequestService;
 
     @BeforeEach
