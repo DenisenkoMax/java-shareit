@@ -19,7 +19,7 @@ import ru.practicum.shareit.item.dto.ItemDtoAnswer;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
-import ru.practicum.shareit.item.user.UserRepositoryJpa;
+import ru.practicum.shareit.user.UserRepositoryJpa;
 import ru.practicum.shareit.validation.Validation;
 
 import java.util.ArrayList;
@@ -41,7 +41,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Optional<ItemDto> create(ItemDto itemDto, long userId) throws NotFoundEx {
         validation.validateUser(userId);
-
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.findById(userId).get());
         if (itemDto.getRequestId() != null) {

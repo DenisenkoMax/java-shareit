@@ -14,7 +14,7 @@ import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.ItemDtoAnswer;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.user.model.User;
+import ru.practicum.shareit.user.model.User;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;

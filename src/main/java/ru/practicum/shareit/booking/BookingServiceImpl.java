@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.ItemRepositoryJpa;
-import ru.practicum.shareit.item.user.UserRepositoryJpa;
+import ru.practicum.shareit.user.UserRepositoryJpa;
 import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.validation.Validation;
 import org.springframework.transaction.annotation.Transactional;

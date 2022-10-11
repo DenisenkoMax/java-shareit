@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.*;
 import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.item.user.model.User;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 

@@ -17,7 +17,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.user.dto.UserDtoAnswer;
+import ru.practicum.shareit.user.dto.UserDtoAnswer;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;

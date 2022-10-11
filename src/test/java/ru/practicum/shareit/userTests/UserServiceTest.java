@@ -2,18 +2,19 @@ package ru.practicum.shareit.userTests;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepositoryJpa;
 import ru.practicum.shareit.exception.NotFoundEx;
-import ru.practicum.shareit.item.user.UserMapper;
-import ru.practicum.shareit.item.user.UserRepositoryJpa;
-import ru.practicum.shareit.item.user.UserService;
-import ru.practicum.shareit.item.user.UserServiceImpl;
-import ru.practicum.shareit.item.user.dto.UserDto;
-import ru.practicum.shareit.item.user.model.User;
+import ru.practicum.shareit.item.ItemRepositoryJpa;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepositoryJpa;
+import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserServiceImpl;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.Validation;
 
 import java.util.List;
@@ -26,17 +27,15 @@ import static org.mockito.Mockito.*;
 @RequiredArgsConstructor
 public class UserServiceTest {
     @Mock
-    private UserRepositoryJpa userRepositoryJpa;
+    private final UserRepositoryJpa userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
     @Mock
-    private Validation validation;
-    private UserService userService;
-
-    @BeforeEach
-    public void before() {
-        userRepositoryJpa = Mockito.mock(UserRepositoryJpa.class);
-        validation = Mockito.mock(Validation.class);
-        userService = new UserServiceImpl(userRepositoryJpa, validation);
-    }
+    private final ItemRepositoryJpa itemRepositoryJpa = Mockito.mock(ItemRepositoryJpa.class);
+    ;
+    @Mock
+    private final BookingRepositoryJpa bookingRepositoryJpa = Mockito.mock(BookingRepositoryJpa.class);
+    ;
+    private final Validation validation = new Validation(userRepositoryJpa, itemRepositoryJpa, bookingRepositoryJpa);
+    private UserService userService = new UserServiceImpl(userRepositoryJpa, validation);
 
     @Test
     public void createUserTest() {
@@ -47,32 +46,30 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateUserTest() throws NotFoundEx {
+    public void updateUserTest() {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         UserDto userDto = new UserDto("name", "email");
         when(userRepositoryJpa.save(any())).thenReturn(user);
-        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(validation).validateUser(anyLong());
-        Assertions.assertEquals("name", userService.updateUser(userDto, 1L).get().getName());
-    }
-
-    @Test
-    public void updateUserWrongUserTest() throws NotFoundEx {
-        User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
-        UserDto userDto = new UserDto("name", "email");
-        when(userRepositoryJpa.save(any())).thenReturn(user);
-        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doThrow(new NotFoundEx("user not found")).when(validation).validateUser(anyLong());
+        when(userRepositoryJpa.findById(user.getId())).thenReturn(Optional.of(user));
         Assertions.assertThrows(NotFoundEx.class,
-                () -> userService.updateUser(userDto, 1L).get().getName());
+                () -> userService.updateUser(userDto, 5L));
     }
 
     @Test
-    public void getAllUsersTest() throws NotFoundEx {
+    public void updateUserWrongUserTest() {
+        User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
+        UserDto userDto = new UserDto("name", "email");
+        when(userRepositoryJpa.save(any())).thenReturn(user);
+        when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundEx.class,
+                () -> userService.updateUser(userDto, 5L).get().getName());
+    }
+
+    @Test
+    public void getAllUsersTest() {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         when(userRepositoryJpa.findAll()).thenReturn(List.of(user));
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(validation).validateUser(anyLong());
         Assertions.assertEquals("name", userService.getAllUsers().get(0).getName());
     }
 
@@ -81,7 +78,6 @@ public class UserServiceTest {
         User user = new User(1L, "name", "email@mail.nmmk", null, null, null);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(validation).validateUser(anyLong());
         Assertions.assertEquals("name", userService.findUserById(1L).get().getName());
     }
 

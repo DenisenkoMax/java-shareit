@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.item.ItemRepositoryJpa;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.user.model.User;
+import ru.practicum.shareit.user.model.User;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

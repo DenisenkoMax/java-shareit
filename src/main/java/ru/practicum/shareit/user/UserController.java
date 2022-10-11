@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.user;
+package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -6,8 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.NotFoundEx;
-import ru.practicum.shareit.item.user.dto.UserDto;
-import ru.practicum.shareit.item.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
 import java.util.List;
