@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @Entity
 @Table(name = "bookings")
-@Builder
 @Data
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)

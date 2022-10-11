@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 @Table(name = "requests")
 @Data
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class ItemRequest implements Serializable {
     public ItemRequest(Long id, String description, User requestor, LocalDateTime created, Set<Item> items) {

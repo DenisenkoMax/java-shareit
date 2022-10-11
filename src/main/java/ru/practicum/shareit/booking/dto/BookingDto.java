@@ -7,7 +7,6 @@ import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 public class BookingDto {
     public BookingDto(Long id, LocalDateTime start, LocalDateTime end, Long itemId,
                       Long bookerId, BookingStatus status) {

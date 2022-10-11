@@ -7,7 +7,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Builder
 public class ItemDto {
     public ItemDto(Long id, String name, String description, Boolean available, Long requestId) {
         this.id = id;

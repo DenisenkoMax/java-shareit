@@ -10,7 +10,6 @@ import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 
 public class BookingDtoAnswer {
     private Long id;

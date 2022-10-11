@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @Table(name = "items")
 @Data
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Item implements Serializable {
     public Item(Long id, String name, String description, User owner, Boolean available, ItemRequest request) {
