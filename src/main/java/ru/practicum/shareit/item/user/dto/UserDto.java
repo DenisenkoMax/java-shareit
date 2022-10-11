@@ -1,6 +1,5 @@
-package ru.practicum.shareit.user.dto;
+package ru.practicum.shareit.item.user.dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -8,9 +7,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
+public class UserDto {
 
-public class UserDtoAnswer {
-    Long id;
     @NotNull
     @NotEmpty
     private String name;
@@ -20,8 +18,7 @@ public class UserDtoAnswer {
             message = "Email should be valid")
     private String email;
 
-    public UserDtoAnswer(Long id, String name, String email) {
-        this.id = id;
+    public UserDto(String name, String email) {
         this.name = name;
         this.email = email;
     }

@@ -9,7 +9,7 @@ import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.ItemRepositoryJpa;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserRepositoryJpa;
+import ru.practicum.shareit.item.user.UserRepositoryJpa;
 
 import javax.validation.ValidationException;
 

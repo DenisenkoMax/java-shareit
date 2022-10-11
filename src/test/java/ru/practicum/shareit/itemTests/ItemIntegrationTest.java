@@ -17,7 +17,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoAnswer;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.user.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;

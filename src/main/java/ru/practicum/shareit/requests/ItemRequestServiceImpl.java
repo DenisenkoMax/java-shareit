@@ -9,7 +9,7 @@ import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoAnswer;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.user.UserRepositoryJpa;
+import ru.practicum.shareit.item.user.UserRepositoryJpa;
 import ru.practicum.shareit.validation.Validation;
 
 import java.time.LocalDateTime;

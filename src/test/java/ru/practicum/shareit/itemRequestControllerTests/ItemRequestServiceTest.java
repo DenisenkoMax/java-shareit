@@ -15,8 +15,8 @@ import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.requests.ItemRequestServiceImpl;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.user.UserRepositoryJpa;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.user.UserRepositoryJpa;
+import ru.practicum.shareit.item.user.model.User;
 import ru.practicum.shareit.validation.Validation;
 
 import java.time.LocalDateTime;

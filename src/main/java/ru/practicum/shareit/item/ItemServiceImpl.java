@@ -19,7 +19,7 @@ import ru.practicum.shareit.item.dto.ItemDtoAnswer;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
-import ru.practicum.shareit.user.UserRepositoryJpa;
+import ru.practicum.shareit.item.user.UserRepositoryJpa;
 import ru.practicum.shareit.validation.Validation;
 
 import java.util.ArrayList;

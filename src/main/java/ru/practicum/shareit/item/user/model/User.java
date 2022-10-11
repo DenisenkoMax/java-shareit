@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.item.user.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;

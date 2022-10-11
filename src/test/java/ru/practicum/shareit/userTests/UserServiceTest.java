@@ -8,12 +8,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundEx;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserRepositoryJpa;
-import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.UserServiceImpl;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.user.UserMapper;
+import ru.practicum.shareit.item.user.UserRepositoryJpa;
+import ru.practicum.shareit.item.user.UserService;
+import ru.practicum.shareit.item.user.UserServiceImpl;
+import ru.practicum.shareit.item.user.dto.UserDto;
+import ru.practicum.shareit.item.user.model.User;
 import ru.practicum.shareit.validation.Validation;
 
 import java.util.List;
