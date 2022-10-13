@@ -29,7 +29,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
         Root<Booking> book = cr.from(Booking.class);
         cr.select(book).where(cb.equal(book.get("booker").get("id"), userId)).orderBy(cb.desc(book.get("start")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -43,7 +43,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
         cr.select(book).where(cb.and(cb.equal(book.get("booker").get("id"), userId), cb.equal(book.get("status"), status)))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -58,7 +58,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                         cb.lessThan(book.get("end"), LocalDateTime.now())))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -73,7 +73,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                         cb.greaterThan(book.get("start"), LocalDateTime.now())))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -89,7 +89,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                                 cb.lessThan(book.get("start"), LocalDateTime.now()))))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -103,7 +103,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
         cr.select(book).where(cb.equal(book.get("item").get("owner").get("id"), userId))
                 .orderBy(cb.desc(book.get("start")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -118,7 +118,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                         cb.equal(book.get("status"), status)))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -133,7 +133,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                         cb.lessThan(book.get("end"), LocalDateTime.now())))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -148,7 +148,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                         cb.greaterThan(book.get("start"), LocalDateTime.now())))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -164,7 +164,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
                                 cb.lessThan(book.get("start"), LocalDateTime.now())))
                 .orderBy(cb.desc(book.get("end")));
         List<Booking> foundBooking = entityManager.createQuery(cr).getResultList();
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), foundBooking.size());
         Page<Booking> page = new PageImpl<>(foundBooking.subList(start, end), pageable, foundBooking.size());
         return page;
@@ -177,7 +177,7 @@ public class BookingRepositoryJpaImpl implements BookingRepositoryJpaCustom {
         Root<Booking> book = cr.from(Booking.class);
         cr.select(book).where(cb.and(cb.equal(book.get("item").get("id"), itemId)),
                 cb.or(cb.and(cb.lessThanOrEqualTo(book.get("start"), start),
-                                        (cb.greaterThanOrEqualTo(book.get("end"), start))),
+                                (cb.greaterThanOrEqualTo(book.get("end"), start))),
                         cb.and(cb.lessThanOrEqualTo(book.get("start"), end),
                                 cb.greaterThanOrEqualTo(book.get("end"), end))
                 )

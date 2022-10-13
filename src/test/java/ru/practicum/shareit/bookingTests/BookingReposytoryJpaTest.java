@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import java.awt.print.Book;
 import java.time.LocalDateTime;
 
 @DataJpaTest
@@ -32,10 +33,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(null, start, end, item, user, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -49,10 +50,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(null, start, end, item, user, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findBookingsByUserAndStatus(user.getId(),
-                BookingStatus.WAITING, PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -66,10 +67,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().minusDays(10);
         Booking booking = new Booking(null, start, end, item, user, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findPastBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -83,10 +84,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(null, start, end, item, user, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findFutureBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -148,10 +149,11 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(null, start, end, item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findItemBookingsByUserAndStatus(user.getId(),
-                BookingStatus.WAITING, PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findItemBookingsByUserAndStatus(user.getId(),
-                BookingStatus.WAITING, PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBookingFindItemBookingsByUserAndStatus = bookingRepository
+                .findItemBookingsByUserAndStatus(user.getId(),
+                        BookingStatus.WAITING, PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBookingFindItemBookingsByUserAndStatus.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBookingFindItemBookingsByUserAndStatus.getEnd());
     }
 
     @Test
@@ -168,10 +170,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().minusDays(3);
         Booking booking = new Booking(null, start, end, item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findPastItemBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findPastItemBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findPastItemBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -188,10 +190,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().plusDays(3);
         Booking booking = new Booking(null, start, end, item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findFutureItemBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findFutureItemBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findFutureItemBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -208,10 +210,10 @@ public class BookingReposytoryJpaTest {
         LocalDateTime end = LocalDateTime.now().plusDays(3);
         Booking booking = new Booking(null, start, end, item, user2, BookingStatus.WAITING);
         entityManager.persist(booking);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.findCurrentItemBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.findCurrentItemBookingsByUser(user.getId(),
-                PageRequest.of(0, 10)).getContent().get(0).getEnd());
+        Booking loadedBooking = bookingRepository.findCurrentItemBookingsByUser(user.getId(),
+                PageRequest.of(0, 10)).getContent().get(0);
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -248,10 +250,9 @@ public class BookingReposytoryJpaTest {
         Booking booking2 = new Booking(null, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(5),
                 item, user2, BookingStatus.WAITING);
         entityManager.persist(booking2);
-        Assertions.assertEquals(booking.getStart(), bookingRepository.getLastItemBookings(item.getId(), user.getId())
-                .getStart());
-        Assertions.assertEquals(booking.getEnd(), bookingRepository.getLastItemBookings(item.getId(), user.getId())
-                .getEnd());
+        Booking loadedBooking = bookingRepository.getLastItemBookings(item.getId(), user.getId());
+        Assertions.assertEquals(booking.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking.getEnd(), loadedBooking.getEnd());
     }
 
     @Test
@@ -270,9 +271,8 @@ public class BookingReposytoryJpaTest {
         Booking booking2 = new Booking(null, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(5),
                 item, user2, BookingStatus.WAITING);
         entityManager.persist(booking2);
-        Assertions.assertEquals(booking2.getStart(), bookingRepository.getNextItemBookings(item.getId(), user.getId())
-                .getStart());
-        Assertions.assertEquals(booking2.getEnd(), bookingRepository.getNextItemBookings(item.getId(), user.getId())
-                .getEnd());
+        Booking loadedBooking = bookingRepository.getNextItemBookings(item.getId(), user.getId());
+        Assertions.assertEquals(booking2.getStart(), loadedBooking.getStart());
+        Assertions.assertEquals(booking2.getEnd(), loadedBooking.getEnd());
     }
 }

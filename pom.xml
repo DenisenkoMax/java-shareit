@@ -159,9 +159,6 @@
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
                         <skip>true</skip>
-                        <!--						<failOnViolation>true</failOnViolation>-->
-                        <!--						<logViolationsToConsole>true</logViolationsToConsole>-->
-                        <!--						<includeTestSourceDirectory>true</includeTestSourceDirectory>-->
                     </configuration>
                     <executions>
                         <execution>
