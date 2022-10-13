@@ -44,7 +44,8 @@ public class User implements Serializable {
     private Set<Booking> bookings = new HashSet<>();
 
 
-    public User(Long id, String name, String email, Set<Item> items, Set<ItemRequest> itemRequests, Set<Booking> bookings) {
+    public User(Long id, String name, String email, Set<Item> items, Set<ItemRequest> itemRequests,
+                Set<Booking> bookings) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -63,6 +64,6 @@ public class User implements Serializable {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return id.hashCode();
     }
 }
