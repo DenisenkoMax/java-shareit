@@ -47,7 +47,6 @@ public class BookingSeviceTest {
 
     @Test
     public void createBooking() throws NotFoundEx, IllegalArgumentEx {
-        Long userId = 1L;
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -74,7 +73,6 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
-        Booking booking = new Booking(1L, start, end, item, user, BookingStatus.WAITING);
         when(bookingRepositoryJpa.findBookingDates(anyLong(), any(), any())).thenReturn(false);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
@@ -123,8 +121,6 @@ public class BookingSeviceTest {
     @Test
     public void createBookingUserIsNotOwner() {
         User user = new User(1L, "name", "email@dffd.ru", null,
-                null, null);
-        User user2 = new User(2L, "name2", "email2@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
         Item item = new Item(1L, "Молоток", "пластиковый", user, true, itemRequest);
@@ -197,7 +193,7 @@ public class BookingSeviceTest {
     }
 
     @Test
-    public void confirmBookingRequestAlredyAvailableTest() throws NotFoundEx, IllegalArgumentEx {
+    public void confirmBookingRequestAlredyAvailableTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -205,8 +201,6 @@ public class BookingSeviceTest {
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
         Booking booking = new Booking(1L, start, end, item, user, BookingStatus.APPROVED);
-        BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end,
-                ItemMapper.toItemDto(item), UserMapper.toUserDtoAnswer(user), BookingStatus.APPROVED);
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(booking));
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
@@ -233,7 +227,7 @@ public class BookingSeviceTest {
     }
 
     @Test
-    public void getBookingByIdTest() throws NotFoundEx, IllegalArgumentEx {
+    public void getBookingByIdTest() throws NotFoundEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
@@ -496,7 +490,6 @@ public class BookingSeviceTest {
     public void findUserBookingsErrorStatusItemBookingsByUserTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
-        ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), null);
         when(bookingRepositoryJpa.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
         Assertions.assertThrows(IllegalArgumentEx.class,

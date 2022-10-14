@@ -45,7 +45,7 @@ public class ItemServiceTest {
     @Mock
     private ItemRequestRepositoryJpa itemRequestRepositoryJpa = Mockito.mock(ItemRequestRepositoryJpa.class);
     private final Validation validation = new Validation(userRepositoryJpa, itemRepositoryJpa, bookingRepositoryJpa);
-    private ItemService itemService = new ItemServiceImpl(itemRepositoryJpa, userRepositoryJpa,
+    private final ItemService itemService = new ItemServiceImpl(itemRepositoryJpa, userRepositoryJpa,
             bookingService, validation, commentRepository, itemRequestRepositoryJpa);
 
     @Test
@@ -61,7 +61,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void createItemWrongUserId() throws NotFoundEx {
+    public void createItemWrongUserId() {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -89,7 +89,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void updateItemWrongUserId() throws NotFoundEx {
+    public void updateItemWrongUserId() {
         ItemDto itemDto = new ItemDto(1L, "Молоток", "кривой", true, null);
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
@@ -137,7 +137,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void findByItemTest() throws NotFoundEx {
+    public void findByItemTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
@@ -148,7 +148,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void findByItemWrongItemTest() throws NotFoundEx {
+    public void findByItemWrongItemTest() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
@@ -159,7 +159,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void findItemByUserIdUserIsNotOwner() throws NotFoundEx {
+    public void findItemByUserIdUserIsNotOwner() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);
@@ -226,7 +226,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void createCommentWrongUser() throws NotFoundEx {
+    public void createCommentWrongUser() {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);
         Item item = new Item(1L, "Молоток", "кривой", user, true, null);

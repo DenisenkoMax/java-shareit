@@ -48,8 +48,6 @@ public class BookingControllerTest {
         LocalDateTime end = LocalDateTime.now().plusHours(3);
 
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
-        ItemDto itemDto = new ItemDto(1L, "name", "desc", true, 1L);
-        UserDtoAnswer userDtoAnswer = new UserDtoAnswer(userId, "user", "user@user.ru");
         BookingDto bookingDtoAnswer = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
 
         when(service.create(bookingDto, userId)).thenReturn(bookingDtoAnswer);
@@ -213,7 +211,6 @@ public class BookingControllerTest {
         Long userId = 1L;
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
-        BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         ItemDto itemDto = new ItemDto(1L, "name", "desc", true, 1L);
         UserDtoAnswer userDtoAnswer = new UserDtoAnswer(userId, "user", "user@user.ru");
         BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end, itemDto, userDtoAnswer,
@@ -237,7 +234,6 @@ public class BookingControllerTest {
         Long userId = 1L;
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(10);
-        BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
         ItemDto itemDto = new ItemDto(1L, "name", "desc", true, 1L);
         UserDtoAnswer userDtoAnswer = new UserDtoAnswer(userId, "user", "user@user.ru");
         BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end, itemDto, userDtoAnswer,

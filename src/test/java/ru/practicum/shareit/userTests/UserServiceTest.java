@@ -33,7 +33,7 @@ public class UserServiceTest {
     @Mock
     private final BookingRepositoryJpa bookingRepositoryJpa = Mockito.mock(BookingRepositoryJpa.class);
     private final Validation validation = new Validation(userRepositoryJpa, itemRepositoryJpa, bookingRepositoryJpa);
-    private UserService userService = new UserServiceImpl(userRepositoryJpa, validation);
+    private final UserService userService = new UserServiceImpl(userRepositoryJpa, validation);
 
     @Test
     public void createUserTest() {
@@ -80,7 +80,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void deleteByIdTest() throws NotFoundEx {
+    public void deleteByIdTest() {
         Mockito.doNothing().when(userRepositoryJpa).deleteById(anyLong());
         userService.deleteUserById(1L);
         verify(userRepositoryJpa, Mockito.times(1)).deleteById(1L);

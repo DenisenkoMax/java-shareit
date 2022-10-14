@@ -100,11 +100,11 @@ public class ItemRequestServiceTest {
         User user = new User(2L, "name", "email@dffd.ru", null,
                 null, null);
         when(userRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(user));
-        Item item = new Item(1L,"Вещь","новая",user,true,null);
+        Item item = new Item(1L, "Вещь", "новая", user, true, null);
         ItemRequest itemRequest = new ItemRequest(1L, "text", user, LocalDateTime.now(), Set.of(item));
         when(itemRequestRepositoryJpa.findItemRequestsByAnotherUsers(anyLong(), any()))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
-        Assertions.assertEquals(item.hashCode(),item.hashCode());
+        Assertions.assertEquals(item.hashCode(), item.hashCode());
         Assertions.assertEquals("text", itemRequestService.findAnotherUsersItemRequests(1L,
                 0, 10).get(0).getDescription());
     }
