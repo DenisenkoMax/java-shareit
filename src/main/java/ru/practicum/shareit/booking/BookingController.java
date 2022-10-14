@@ -23,8 +23,8 @@ public class BookingController {
     private static final String PAGE_SIZE = "10";
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingDto> createBooking(@Valid @RequestBody BookingDto bookingDto,
-                                                    @RequestHeader("X-Sharer-User-Id") long userId)
+    public ResponseEntity<BookingDtoAnswer> createBooking(@Valid @RequestBody BookingDto bookingDto,
+                                                          @RequestHeader("X-Sharer-User-Id") long userId)
             throws IllegalArgumentEx, NotFoundEx {
         return new ResponseEntity<>(bookingService.create(bookingDto, userId), HttpStatus.CREATED);
     }
@@ -49,9 +49,9 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size,
-                                                                  @RequestHeader("X-Sharer-User-Id") Long userId)
+            @RequestHeader("X-Sharer-User-Id") Long userId)
             throws NotFoundEx, IllegalArgumentEx {
-        return new ResponseEntity<>(bookingService.getUserBookings(userId, state,from,size), HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.getUserBookings(userId, state, from, size), HttpStatus.OK);
     }
 
     @GetMapping("/owner")
@@ -59,7 +59,7 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size,
-                                                                      @RequestHeader("X-Sharer-User-Id") Long userId)
+            @RequestHeader("X-Sharer-User-Id") Long userId)
             throws IllegalArgumentEx, NotFoundEx {
         return new ResponseEntity<>(bookingService.getItemsBookings(userId, state, from, size), HttpStatus.OK);
     }

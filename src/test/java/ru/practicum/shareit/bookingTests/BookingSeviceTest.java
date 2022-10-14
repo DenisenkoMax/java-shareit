@@ -60,7 +60,7 @@ public class BookingSeviceTest {
         when(itemRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(item));
         when(bookingRepositoryJpa.save(any())).thenReturn(booking);
         Assertions.assertEquals(item.getId(), bookingService.create(bookingDto, 2L)
-                .getItemId());
+                .getItem().getId());
     }
 
     @Test

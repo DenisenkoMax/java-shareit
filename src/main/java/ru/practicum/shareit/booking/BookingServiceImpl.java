@@ -28,7 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepositoryJpa itemRepository;
     private final Validation validation;
 
-    public BookingDto create(BookingDto bookingDto, Long userId) throws NotFoundEx, IllegalArgumentEx {
+    public BookingDtoAnswer create(BookingDto bookingDto, Long userId) throws NotFoundEx, IllegalArgumentEx {
         validation.validateUser(userId);
         validation.validateItem(bookingDto.getItemId());
         validation.validateItemAvailable(bookingDto.getItemId());
@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.WAITING);
 
         bookingRepository.save(booking);
-        return BookingMapper.toBookingDto(booking);
+        return BookingMapper.toBookingDtoAnswer(booking);
     }
 
     public BookingDtoAnswer confirmBookingRequest(Long bookingId, Long userId, boolean approved)
