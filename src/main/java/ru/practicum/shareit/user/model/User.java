@@ -64,6 +64,6 @@ public class User implements Serializable {
 
     @Override
     public int hashCode() {
-        return this.id.hashCode();
+        return id.hashCode();
     }
 }
