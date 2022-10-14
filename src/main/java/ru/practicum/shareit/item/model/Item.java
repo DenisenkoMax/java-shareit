@@ -47,7 +47,6 @@ public class Item implements Serializable {
 
     @Override
     public int hashCode() {
-        if (this.id == null) return this.name.hashCode();
-        else return this.id.hashCode();
+        return this.id.hashCode();
     }
 }
