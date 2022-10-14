@@ -17,6 +17,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.exception.NotFoundEx;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoAnswer;
 
 import java.nio.charset.StandardCharsets;
@@ -48,14 +49,18 @@ public class BookingControllerTest {
         LocalDateTime end = LocalDateTime.now().plusHours(3);
 
         BookingDto bookingDto = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
-        BookingDto bookingDtoAnswer = new BookingDto(1L, start, end, 1L, 1L, BookingStatus.WAITING);
+        ItemDto itemDto = new ItemDto(1L, "name", "description", true, null);
+        UserDtoAnswer booker = new UserDtoAnswer(1L, "name", "email@sdsd.ru");
+        BookingDtoAnswer bookingDtoAnswer = new BookingDtoAnswer(1L, start, end, itemDto, booker,
+                BookingStatus.WAITING);
 
         when(service.create(bookingDto, userId)).thenReturn(bookingDtoAnswer);
 
         mockMvc.perform(post("/bookings").content(objectMapper.writeValueAsString(bookingDto))
                         .header("X-Sharer-User-Id", userId).characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.itemId", is(1)));
+                .andExpect(jsonPath("$.id", is(1))).
+                andExpect(jsonPath("$.item.id", is(1)));
 
         verify(service, Mockito.times(1)).create(bookingDto, userId);
     }

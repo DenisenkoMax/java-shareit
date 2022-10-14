@@ -10,7 +10,7 @@ import ru.practicum.shareit.exception.NotFoundEx;
 import java.util.List;
 
 public interface BookingService {
-    BookingDto create(BookingDto bookingDto, Long userId) throws NotFoundEx, IllegalArgumentEx;
+    BookingDtoAnswer create(BookingDto bookingDto, Long userId) throws NotFoundEx, IllegalArgumentEx;
 
     BookingDtoAnswer confirmBookingRequest(Long bookingId, Long userId, boolean approved)
             throws NotFoundEx, IllegalArgumentEx;
