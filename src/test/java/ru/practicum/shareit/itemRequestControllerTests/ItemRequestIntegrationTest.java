@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Transactional
 @SpringBootTest(
@@ -27,16 +28,16 @@ public class ItemRequestIntegrationTest {
     private final ItemRequestService itemRequestService;
     private final EntityManager em;
     private User user;
+    private User user2;
     private ItemRequest itemRequest;
     private ItemRequest itemRequest2;
 
     @BeforeEach
     public void before() {
-
         user = new User(null, "name", "email@dffd.ru", null,
                 null, null);
         em.persist(user);
-        User user2 = new User(null, "name2", "email2@dffd.ru", null,
+        user2 = new User(null, "name2", "email2@dffd.ru", null,
                 null, null);
         em.persist(user2);
         itemRequest = new ItemRequest(null, "text", user, LocalDateTime.now(), null);
@@ -58,17 +59,17 @@ public class ItemRequestIntegrationTest {
 
     @Test
     public void findUserOwnerItemRequests() throws NotFoundEx, IllegalArgumentEx {
-        ItemRequestDtoAnswer loadedItemRequest = itemRequestService
-                .findUserOwnerItemRequests(user.getId(), 0, 10).get(1);
-        Assertions.assertEquals(itemRequest.getDescription(), loadedItemRequest.getDescription());
-        Assertions.assertEquals(itemRequest2.getDescription(), loadedItemRequest.getDescription());
+        List<ItemRequestDtoAnswer> loadedIitemRequestList = itemRequestService
+                .findUserOwnerItemRequests(user.getId(), 0, 10);
+        Assertions.assertEquals(itemRequest.getDescription(), loadedIitemRequestList.get(1).getDescription());
+        Assertions.assertEquals(itemRequest2.getDescription(), loadedIitemRequestList.get(0).getDescription());
     }
 
     @Test
     public void findAnotherUsersItemRequests() throws NotFoundEx, IllegalArgumentEx {
-        ItemRequestDtoAnswer loadedItemRequest = itemRequestService
-                .findUserOwnerItemRequests(user.getId(), 0, 10).get(1);
-        Assertions.assertEquals(itemRequest.getDescription(), loadedItemRequest.getDescription());
-        Assertions.assertEquals(itemRequest2.getDescription(), loadedItemRequest.getDescription());
+        List<ItemRequestDtoAnswer> loadedIitemRequestList = itemRequestService
+                .findAnotherUsersItemRequests(user2.getId(), 0, 10);
+        Assertions.assertEquals(itemRequest.getDescription(), loadedIitemRequestList.get(1).getDescription());
+        Assertions.assertEquals(itemRequest2.getDescription(), loadedIitemRequestList.get(0).getDescription());
     }
 }
