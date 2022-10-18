@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "comments")
 @Data
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Comment implements Serializable {
 

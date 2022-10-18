@@ -5,16 +5,13 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-
-@EqualsAndHashCode
 @Entity
 @Table(name = "bookings")
-@Builder
 @Data
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class Booking {
+public class Booking  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

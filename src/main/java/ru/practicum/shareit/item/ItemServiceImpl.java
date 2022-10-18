@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingService;
@@ -16,6 +18,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoAnswer;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.ItemRequestRepositoryJpa;
 import ru.practicum.shareit.user.UserRepositoryJpa;
 import ru.practicum.shareit.validation.Validation;
 
@@ -33,15 +36,18 @@ public class ItemServiceImpl implements ItemService {
     private final Validation validation;
 
     private final CommentRepository commentRepository;
+    private final ItemRequestRepositoryJpa itemRequestRepository;
 
     @Override
-    public Optional<Item> create(ItemDto itemDto, long userId) throws NotFoundEx {
+    public Optional<ItemDto> create(ItemDto itemDto, long userId) throws NotFoundEx {
         validation.validateUser(userId);
-        validation.validateItemDtoParametrs(itemDto);
-
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.findById(userId).get());
-        return Optional.ofNullable(itemRepository.save(item));
+        if (itemDto.getRequestId() != null) {
+            item.setRequest(itemRequestRepository.findById(itemDto.getRequestId()).get());
+        }
+        itemRepository.save(item);
+        return Optional.ofNullable(ItemMapper.toItemDto(item));
     }
 
     @Override
@@ -78,41 +84,48 @@ public class ItemServiceImpl implements ItemService {
             return Optional.ofNullable(ItemMapper.toItemDtoAnswer(item.get(),
                     BookingMapper.toBookingDto(lastBooking),
                     BookingMapper.toBookingDto(nextBooking),
-                    commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p)).collect(Collectors.toSet())
+                    commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p))
+                            .collect(Collectors.toSet())
             ));
         } else return Optional.ofNullable(ItemMapper.toItemDtoAnswer(item.get(),
                 null,
                 null,
-                commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p)).collect(Collectors.toSet())
+                commentRepository.findByItem(itemId).stream().map(p -> CommentMapper.toCommentDto(p))
+                        .collect(Collectors.toSet())
         ));
     }
 
     @Override
-    public List<ItemDtoAnswer> getItemsByOwner(long userId) throws NotFoundEx {
+    public List<ItemDtoAnswer> getItemsByOwner(long userId, int from, int size) throws NotFoundEx, IllegalArgumentEx {
         validation.validateUser(userId);
+        validation.validatePagination(size, from);
 
-        return itemRepository.getItemsByOwner(userId).stream().map(p -> ItemMapper.toItemDtoAnswer(p,
-                BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
-                BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
-                commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n))
-                        .collect(Collectors.toSet()))).collect(Collectors.toList());
+        return itemRepository.getItemsByOwner(userId, PageRequest.of(from / size, size, Sort.by("id")))
+                .stream().map(p -> ItemMapper.toItemDtoAnswer(p,
+                        BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
+                        BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
+                        commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n))
+                                .collect(Collectors.toSet()))).collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, int from, int size) throws IllegalArgumentEx {
         if (text.isEmpty() || text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.search(text).stream().map(p -> ItemMapper.toItemDto(p)).collect(Collectors.toList());
+        validation.validatePagination(size, from);
+        return itemRepository.search(text, PageRequest.of(from / size, size, Sort.by("id"))).stream()
+                .map(p -> ItemMapper.toItemDto(p)).collect(Collectors.toList());
     }
 
     @Override
-    public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) throws NotFoundEx, IllegalArgumentEx {
+    public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) throws NotFoundEx,
+            IllegalArgumentEx {
         validation.validateUser(userId);
         validation.validateItem(itemId);
 
         Comment comment;
-        if (bookingService.getUserBookings(userId, "PAST")
+        if (bookingService.getUserBookings(userId, "PAST", 0, Integer.MAX_VALUE)
                 .stream().filter(p -> p.getStatus().equals(BookingStatus.APPROVED))
                 .anyMatch(p -> p.getItem().getId().equals(itemId))) {
             comment = CommentMapper.toComment(commentDto);

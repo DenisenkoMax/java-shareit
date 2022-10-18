@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.Optional;
 
-interface UserService {
+public interface UserService {
     List<User> getAllUsers();
 
     Optional<User> createUser(UserDto userDto);

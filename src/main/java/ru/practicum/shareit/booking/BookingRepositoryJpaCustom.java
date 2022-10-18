@@ -2,30 +2,30 @@ package ru.practicum.shareit.booking;
 
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface BookingRepositoryJpaCustom {
-    List<Booking> findBookingsByUser(Long userId);
+    Page<Booking> findBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findBookingsByUserAndStatus(Long userId, BookingStatus status);
+    Page<Booking> findBookingsByUserAndStatus(Long userId, BookingStatus status, Pageable pageable);
 
-    List<Booking> findPastBookingsByUser(Long userId);
+    Page<Booking> findPastBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findFutureBookingsByUser(Long userId);
+    Page<Booking> findFutureBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findCurrentBookingsByUser(Long userId);
+    Page<Booking> findCurrentBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findItemBookingsByUser(Long userId);
+    Page<Booking> findItemBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findItemBookingsByUserAndStatus(Long userId, BookingStatus waiting);
+    Page<Booking> findItemBookingsByUserAndStatus(Long userId, BookingStatus waiting, Pageable pageable);
 
-    List<Booking> findPastItemBookingsByUser(Long userId);
+    Page<Booking> findPastItemBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findFutureItemBookingsByUser(Long userId);
+    Page<Booking> findFutureItemBookingsByUser(Long userId, Pageable pageable);
 
-    List<Booking> findCurrentItemBookingsByUser(Long userId);
+    Page<Booking> findCurrentItemBookingsByUser(Long userId, Pageable pageable);
 
     boolean findBookingDates(Long itemId, LocalDateTime start, LocalDateTime end);
 
