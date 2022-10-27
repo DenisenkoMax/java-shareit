@@ -7,11 +7,12 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "bookings")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class Booking  implements Serializable {
+public class Booking implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

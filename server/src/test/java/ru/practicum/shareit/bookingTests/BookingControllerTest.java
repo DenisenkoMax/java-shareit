@@ -58,8 +58,8 @@ public class BookingControllerTest {
         mockMvc.perform(post("/bookings").content(objectMapper.writeValueAsString(bookingDto))
                         .header("X-Sharer-User-Id", userId).characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1))).
-                andExpect(jsonPath("$.item.id", is(1)));
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.item.id", is(1)));
 
         verify(service, Mockito.times(1)).create(bookingDto, userId);
     }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import lombok.Getter;
+
 @Getter
 public class UserDtoAnswer {
     Long id;
