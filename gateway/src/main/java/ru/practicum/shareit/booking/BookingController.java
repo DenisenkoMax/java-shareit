@@ -25,11 +25,11 @@ public class BookingController {
     private static final String PAGE_SIZE = "10";
 
     @GetMapping
-    public ResponseEntity<Object> getBookings
-            (@RequestHeader("X-Sharer-User-Id") long userId,
-             @RequestParam(name = "state", defaultValue = "all") String stateParam,
-             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public ResponseEntity<Object> getBookings(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(name = "state", defaultValue = "all") String stateParam,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -58,11 +58,11 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<Object> getAllItemsBookings
-            (@RequestParam(name = "state", defaultValue = "all") String stateParam,
-             @RequestHeader("X-Sharer-User-Id") Long userId,
-             @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
-             @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) {
+    public ResponseEntity<Object> getAllItemsBookings(
+            @RequestParam(name = "state", defaultValue = "all") String stateParam,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
+            @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         return bookingClient.getItemsBookings(userId, state, from, size);
