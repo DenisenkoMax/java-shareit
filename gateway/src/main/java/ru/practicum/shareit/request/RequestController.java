@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import javax.validation.Valid;
@@ -43,7 +44,7 @@ public class RequestController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @Positive @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size
-    ) {
+    ) throws IllegalArgumentEx {
         log.info("findUserOwnerItemRequests userId={}, from={}, size={}", userId, from, size);
         return requestsClient.findUserOwnerItemRequests(userId, from, size);
     }
@@ -53,7 +54,7 @@ public class RequestController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @Positive @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size
-    ) {
+    ) throws IllegalArgumentEx {
         log.info("findAnotherUsersItemRequests userId={}, from={}, size={}", userId, from, size);
         return requestsClient.findAnotherUsersItemRequests(userId, from, size);
     }

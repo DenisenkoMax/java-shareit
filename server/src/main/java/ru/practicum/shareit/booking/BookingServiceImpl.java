@@ -29,33 +29,29 @@ public class BookingServiceImpl implements BookingService {
     private final Validation validation;
 
     public BookingDtoAnswer create(BookingDto bookingDto, Long userId) throws NotFoundEx, IllegalArgumentEx {
-        validation.validateUser(userId);
-        validation.validateItem(bookingDto.getItemId());
-        validation.validateItemAvailable(bookingDto.getItemId());
-        validation.validateBookingDate(bookingDto);
-
+        validation.validateUser(userId); //Валидация, которая требует работы с БД
+        validation.validateItem(bookingDto.getItemId()); //Валидация, которая требует работы с БД
+        validation.validateItemAvailable(bookingDto.getItemId()); //Валидация, которая требует работы с БД
+        //Валидация, которая требует работы с БД
         if (bookingRepository.findBookingDates(bookingDto.getItemId(), bookingDto.getStart(), bookingDto.getEnd())) {
             throw new NotFoundEx("Item dates is busy");
         }
         Booking booking = BookingMapper.toBooking(bookingDto);
-
         booking.setBooker(userRepository.findById(userId).get());
-
         booking.setItem(itemRepository.findById(bookingDto.getItemId()).get());
-        validation.validateBookerIsOwner(booking.getItem(), userId);
+        validation.validateBookerIsOwner(booking.getItem(), userId); //Валидация, которая требует работы с БД
         booking.setStatus(BookingStatus.WAITING);
-
         bookingRepository.save(booking);
         return BookingMapper.toBookingDtoAnswer(booking);
     }
 
     public BookingDtoAnswer confirmBookingRequest(Long bookingId, Long userId, boolean approved)
             throws NotFoundEx, IllegalArgumentEx {
-        validation.validateBooking(bookingId);
-        validation.validateUser(userId);
+        validation.validateBooking(bookingId);//Валидация, которая требует работы с БД
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
-        validation.validateItemOwner(booking.getItem(), userId);
-
+        validation.validateItemOwner(booking.getItem(), userId);//Валидация, которая требует работы с БД
+        //Валидация, которая требует работы с объектом booking, полученным из БД,
         if (booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new IllegalArgumentEx("Item alredy available");
         }
@@ -70,10 +66,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDtoAnswer getBookingById(Long userId, Long bookingId) throws NotFoundEx {
-        validation.validateUser(userId);
-        validation.validateBooking(bookingId);
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
+        validation.validateBooking(bookingId);//Валидация, которая требует работы с БД
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
-        validation.validateUserIsBookerOrOwner(booking, userId);
+        validation.validateUserIsBookerOrOwner(booking, userId);//Валидация, которая требует работы с БД
         return BookingMapper.toBookingDtoAnswer(booking);
     }
 
@@ -82,8 +78,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDtoAnswer> getUserBookings(Long userId, String state, int from, int size)
             throws NotFoundEx, IllegalArgumentEx {
 
-        validation.validateUser(userId);
-        validation.validatePagination(size, from);
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
         List<Booking> bookings = new ArrayList<>();
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
         switch (state) {
@@ -109,6 +104,8 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findCurrentBookingsByUser(userId, pageable).getContent();
                 break;
             default:
+                //Валидация неверного статуса уже реализована в контроллере шлюза,
+                //Здесь данный код никакой лишней работы от сервера не потребует
                 throw new IllegalArgumentEx("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookings.stream()
@@ -120,8 +117,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDtoAnswer> getItemsBookings(Long userId, String state, int from, int size)
             throws NotFoundEx, IllegalArgumentEx {
-        validation.validateUser(userId);
-        validation.validatePagination(size, from);
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
         List<Booking> bookings = new ArrayList<>();
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
         switch (state) {

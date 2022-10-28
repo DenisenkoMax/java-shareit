@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findUserById(long id) throws NotFoundEx {
-        validation.validateUser(id);
+        validation.validateUser(id); //Валидация, которая требует работы с БД
         return repository.findById(id);
     }
 

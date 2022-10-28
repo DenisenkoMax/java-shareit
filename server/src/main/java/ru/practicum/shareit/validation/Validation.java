@@ -19,7 +19,6 @@ public class Validation {
     private final BookingRepositoryJpa bookingRepository;
 
 
-
     public void validateUserIsBookerOrOwner(Booking booking, long userId) throws NotFoundEx {
         long bookerId = booking.getBooker().getId();
         long ownerId = booking.getItem().getOwner().getId();
@@ -46,12 +45,6 @@ public class Validation {
         }
     }
 
-    public void validateBookingDate(BookingDto bookingDto) throws IllegalArgumentEx {
-        if (bookingDto.getStart().isAfter(bookingDto.getEnd())) {
-            throw new IllegalArgumentEx("Item date wrong");
-        }
-    }
-
     public void validateBooking(Long bookingId) throws NotFoundEx {
         if (bookingRepository.findById(bookingId).isEmpty()) {
             throw new NotFoundEx("Booking not found");
@@ -67,14 +60,6 @@ public class Validation {
     public void validateBookerIsOwner(Item item, long userId) throws NotFoundEx {
         if (item.getOwner().getId() == userId) {
             throw new NotFoundEx("the owner cannot book his item");
-        }
-    }
-
-    public void validatePagination(int size, int from) throws IllegalArgumentEx {
-        if (from < 0) {
-            throw new IllegalArgumentEx("Argument from incorrect");
-        } else if (size <= 0) {
-            throw new IllegalArgumentEx("Argument size incorrect");
         }
     }
 }

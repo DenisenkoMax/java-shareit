@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class UserDtoAnswer {
-    Long id;
+    private Long id;
     private String name;
     private String email;
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -53,7 +54,7 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") long userId,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @Positive @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size
-    ) {
+    ) throws IllegalArgumentEx {
         log.info("getItemsByOwner userId={}, from={}, size={}", userId, from, size);
         return itemClient.getItemsByOwner(userId, from, size);
     }
@@ -63,7 +64,7 @@ public class ItemController {
             @RequestParam(defaultValue = "") String text,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
             @Positive @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size,
-            @RequestHeader("X-Sharer-User-Id") long userId) {
+            @RequestHeader("X-Sharer-User-Id") long userId) throws IllegalArgumentEx {
         log.info("search item text={}, from={}, size={}", text, userId, from, size);
         return itemClient.search(text, userId, from, size);
     }

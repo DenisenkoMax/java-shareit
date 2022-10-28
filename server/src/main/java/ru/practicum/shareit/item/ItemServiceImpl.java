@@ -37,7 +37,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Optional<ItemDto> create(ItemDto itemDto, long userId) throws NotFoundEx {
-        validation.validateUser(userId);
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.findById(userId).get());
         if (itemDto.getRequestId() != null) {
@@ -49,10 +49,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Optional<ItemDto> updateItem(ItemDto itemDto, long itemId, long userId) throws NotFoundEx {
-        validation.validateUser(userId);
-        validation.validateItem(itemId);
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
+        validation.validateItem(itemId);//Валидация, которая требует работы с БД
         Item item = itemRepository.findById(itemId).get();
-        validation.validateItemOwner(item, userId);
+        validation.validateItemOwner(item, userId);//Валидация, которая требует работы с БД
         if ((itemDto.getName() != null) && (!itemDto.getName().isEmpty())) {
             item.setName(itemDto.getName());
         }
@@ -70,6 +70,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Optional<ItemDtoAnswer> findItemById(long userId, long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
+        //Валидация, которая требует работы с БД
         if (!item.isPresent()) {
             return Optional.empty();
         }
@@ -94,27 +95,20 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoAnswer> getItemsByOwner(long userId, int from, int size) throws NotFoundEx, IllegalArgumentEx {
-        validation.validateUser(userId);
-        validation.validatePagination(size, from);
-
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
         return itemRepository.getItemsByOwner(userId, PageRequest.of(from / size, size, Sort.by("id")))
                 .stream().map(p -> ItemMapper.toItemDtoAnswer(p,
                         BookingMapper.toBookingDto(bookingService.getItemLastBookings(p.getId(), userId)),
                         BookingMapper.toBookingDto(bookingService.getItemNextBookings(p.getId(), userId)),
                         commentRepository.findByItem(p.getId()).stream().map(n -> CommentMapper.toCommentDto(n))
                                 .collect(Collectors.toSet()))).collect(Collectors.toList());
-
-
-
     }
 
-
     @Override
-    public List<ItemDto> search(String text, int from, int size) throws IllegalArgumentEx {
+    public List<ItemDto> search(String text, int from, int size) {
         if (text.isEmpty() || text.isBlank()) {
             return new ArrayList<>();
         }
-        validation.validatePagination(size, from);
         return itemRepository.search(text, PageRequest.of(from / size, size, Sort.by("id"))).stream()
                 .map(p -> ItemMapper.toItemDto(p)).collect(Collectors.toList());
     }
@@ -122,9 +116,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) throws NotFoundEx,
             IllegalArgumentEx {
-        validation.validateUser(userId);
-        validation.validateItem(itemId);
-
+        validation.validateUser(userId);//Валидация, которая требует работы с БД
+        validation.validateItem(itemId);//Валидация, которая требует работы с БД
         Comment comment;
         if (bookingService.getUserBookings(userId, "PAST", 0, Integer.MAX_VALUE)
                 .stream().filter(p -> p.getStatus().equals(BookingStatus.APPROVED))

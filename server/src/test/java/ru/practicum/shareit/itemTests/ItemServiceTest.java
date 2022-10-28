@@ -198,16 +198,6 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void searchTestPaginationError() {
-        User user = new User(1L, "name", "email@dffd.ru", null,
-                null, null);
-        Item item = new Item(1L, "Молоток", "кривой", user, true, null);
-        when(itemRepositoryJpa.search(anyString(), any())).thenReturn(new PageImpl<>(List.of(item)));
-        Assertions.assertThrows(IllegalArgumentEx.class,
-                () -> itemService.search("молот", -1, 10).get(0).getName());
-    }
-
-    @Test
     public void createCommentTest() throws NotFoundEx, IllegalArgumentEx {
         User user = new User(1L, "name", "email@dffd.ru", null,
                 null, null);

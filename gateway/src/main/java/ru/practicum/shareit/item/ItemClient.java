@@ -8,24 +8,28 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
+import ru.practicum.shareit.exception.IllegalArgumentEx;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.validation.Validation;
 
 import java.util.Map;
 
 @Service
 public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
+    private final Validation validation;
 
     @Autowired
-    public ItemClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public ItemClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder, Validation validation) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
+        this.validation = validation;
     }
 
     public ResponseEntity<Object> create(ItemDto itemDto, Long userId) {
@@ -40,8 +44,8 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getItemsByOwner(Long userId, int from, int size) {
-
+    public ResponseEntity<Object> getItemsByOwner(Long userId, int from, int size) throws IllegalArgumentEx {
+        validation.validatePagination(size, from);
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
@@ -49,7 +53,8 @@ public class ItemClient extends BaseClient {
         return get("?from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> search(String text, Long userId, int from, int size) {
+    public ResponseEntity<Object> search(String text, Long userId, int from, int size) throws IllegalArgumentEx {
+        validation.validatePagination(size, from);
         Map<String, Object> parameters = Map.of(
                 "text", text,
                 "from", from,

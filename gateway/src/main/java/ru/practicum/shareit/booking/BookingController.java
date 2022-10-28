@@ -3,12 +3,14 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exception.IllegalArgumentEx;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -29,16 +31,17 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") long userId,
             @RequestParam(name = "state", defaultValue = "all") String stateParam,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) throws IllegalArgumentEx {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getBookings(userId, state, from, size);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestBody @Valid BookItemRequestDto requestDto) {
+                                           @RequestBody @Valid BookItemRequestDto requestDto)
+            throws IllegalArgumentEx {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
     }
@@ -62,7 +65,7 @@ public class BookingController {
             @RequestParam(name = "state", defaultValue = "all") String stateParam,
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(name = "from", defaultValue = FIRST_ELEMENT) int from,
-            @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) {
+            @RequestParam(name = "size", defaultValue = PAGE_SIZE) int size) throws IllegalArgumentEx {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         return bookingClient.getItemsBookings(userId, state, from, size);
